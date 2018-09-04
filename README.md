@@ -1,6 +1,6 @@
-# Welcome to Marquette's NASA RMC Repo
+# Welcome to Marquette's NASA RMC Team Page
 
-This code is a work in progress anddocumentation will be added as we progress.
+This project is a work in progress and documentation will be added as we progress.
 
 ## The Project
 
