@@ -1,37 +1,28 @@
-## Welcome to GitHub Pages
+# Welcome to Marquette's NASA RMC Repo
 
-You can use the [editor on GitHub](https://github.com/MarquetteRMC/Software/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This code is a work in progress anddocumentation will be added as we progress.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## The Project
 
-### Markdown
+Over the next 9 months we will be designing and building an autonomous mining robot to enter into the NASA Remote Mining COmpetition which will be held in May 2019. 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## The Robot
 
-```markdown
-Syntax highlighted code block
+The robot is still in a very early stage, but check back in a few months for project updates.
 
-# Header 1
-## Header 2
-### Header 3
+## The Team
 
-- Bulleted
-- List
+1. Matthew Braccio
+2. Erik LeBeau
+3. Dean Koumoutsos
+4. Zach Nordgren
+5. Tim Campbell
+6. Francesco Fuentes
+7. Nathan Faust
+9. Zach Pederson
+10. Maggie
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
 ```
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/MarquetteRMC/Software/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
