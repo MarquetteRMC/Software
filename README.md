@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Welcome to Marquette's NASA RMC Team Page
 
 This project is a work in progress and documentation will be added as we progress.
@@ -26,4 +27,4 @@ The robot is still in a very early stage, but check back in a few months for pro
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-Test Text
+
