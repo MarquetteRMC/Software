@@ -28,3 +28,14 @@ The robot is still in a very early stage, but check back in a few months for pro
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
 
+## Setup
+If you are wishing to run gazebo and/or rviz using this code make sure build and source the catkin_make file individually. 
+
+Building the catkin library: 
+'''cd Software
+catkin init
+catkin build'''
+
+Sourcing the files. Note this needs to be done in every new terminal that is created. Will be edited in future versions.
+'source devel/setup.bash'
+
