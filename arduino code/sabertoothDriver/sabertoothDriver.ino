@@ -20,7 +20,7 @@ SoftwareSerial RSerial(NOT_A_PIN, 11); //connect to S1
 SabertoothSimplified ST(RSerial);
 
 int robot_speed = 100;
-float turning_speed = 0.5;
+float turning_speed = 0.7;
 int r_trim = 0, l_trim = 0;
 long int stop_time = 0;
 int robot_direction = STOPPED;
@@ -99,13 +99,13 @@ void update_wheels(void) {
       set_motors(robot_speed, robot_speed);
       break;
     case RIGHT:
-      set_motors(robot_speed*turning_speed, -robot_speed*turning_speed);
+      set_motors(-robot_speed*turning_speed, robot_speed*turning_speed);
       break;
     case BACK:
       set_motors(-robot_speed, -robot_speed);
       break;
     case LEFT:
-      set_motors(-robot_speed*turning_speed, robot_speed*turning_speed);
+      set_motors(robot_speed*turning_speed, -robot_speed*turning_speed);
       break;
   }
 
