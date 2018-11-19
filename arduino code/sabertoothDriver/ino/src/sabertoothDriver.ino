@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-#include <SabertoothSimplified.h>
+#include "SabertoothSimplified.h"
 
 #define STOPPED 0
 #define FORWARD 1
@@ -112,7 +112,7 @@ void input_handler(void) {
       break;
   }
 
-while(!Serial.available) {}
+while(!Serial.available()) {}
 
 robot_speed = 14 * constrain(Serial.read() - '0',0,9); // to map 0-9 to 0-126 to which is the robot speed 
 
@@ -149,4 +149,6 @@ void set_motors(int l, int r) {
   ST.motor(LWHEEL,l+constrain(l_trim,-1,1)*l_trim);
   ST.motor(RWHEEL,r+constrain(r_trim,-1,1)*r_trim);
 }
+
+
 

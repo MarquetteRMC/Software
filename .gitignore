@@ -1,0 +1,14 @@
+*.d
+*.o
+*.obj
+*.elf
+*.ilk
+*.hex
+*.map
+*.exp
+*.a
+*.out
+*.swp
+*.pickle
+*.deps
+*.sketch
