@@ -15,6 +15,10 @@ source ~/.bashrc
 sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential
 
 sudo apt install git
+git config --global user.email "zachary.nordgren@marquette.edu"
+git config --global user.name "Zach Nordgren"
+
+
 sudo apt install python
 git clone https://github.com/MarquetteRMC/Software.git
 
