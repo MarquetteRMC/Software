@@ -6,6 +6,8 @@ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main
 
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
 
+sudo apt update
+
 sudo apt install ros-melodic-desktop
 apt search ros-melodic
 sudo rosdep init

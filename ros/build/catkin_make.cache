@@ -1,0 +1,2 @@
+odrive_ros:teleop
+-DCATKIN_DEVEL_PREFIX=/home/zandgren/Software/ros/devel -DCMAKE_INSTALL_PREFIX=/home/zandgren/Software/ros/install -G Unix Makefiles
