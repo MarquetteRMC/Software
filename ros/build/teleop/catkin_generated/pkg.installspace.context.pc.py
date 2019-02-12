@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "teleop"
-PROJECT_SPACE_DIR = "/home/zandgren/Software/ros/install"
+PROJECT_SPACE_DIR = "/home/mars/Software/ros/install"
 PROJECT_VERSION = "0.0.0"

@@ -1,8 +1,8 @@
-prefix=/home/zandgren/Software/ros/install
+prefix=/home/mars/Software/ros/install
 
 Name: odrive_ros
 Description: Description of odrive_ros
 Version: 0.3.1
 Cflags: 
-Libs: -L/home/zandgren/Software/ros/install/lib 
+Libs: -L/home/mars/Software/ros/install/lib 
 Requires: 

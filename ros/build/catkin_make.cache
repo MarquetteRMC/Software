@@ -1,2 +1,2 @@
-odrive_ros:teleop
--DCATKIN_DEVEL_PREFIX=/home/zandgren/Software/ros/devel -DCMAKE_INSTALL_PREFIX=/home/zandgren/Software/ros/install -G Unix Makefiles
+image_converter:kinect_V1:odrive_ros:qr_detector:src/rtabmap_ros:teleop:vision_opencv/cv_bridge:vision_opencv/image_geometry:vision_opencv/opencv_tests:vision_opencv/vision_opencv:zbar_ros
+-DCATKIN_DEVEL_PREFIX=/home/mars/Software/ros/devel -DCMAKE_INSTALL_PREFIX=/home/mars/Software/ros/install -G Unix Makefiles

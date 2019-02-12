@@ -14,20 +14,20 @@ fi
 
 echo_and_run() { echo "+ $@" ; "$@" ; }
 
-echo_and_run cd "/home/zandgren/Software/ros/src/odrive_ros"
+echo_and_run cd "/home/mars/Software/ros/src/odrive_ros"
 
 # ensure that Python install destination exists
-echo_and_run mkdir -p "$DESTDIR/home/zandgren/Software/ros/install/lib/python2.7/dist-packages"
+echo_and_run mkdir -p "$DESTDIR/home/mars/Software/ros/install/lib/python2.7/dist-packages"
 
 # Note that PYTHONPATH is pulled from the environment to support installing
 # into one location when some dependencies were installed in another
 # location, #123.
 echo_and_run /usr/bin/env \
-    PYTHONPATH="/home/zandgren/Software/ros/install/lib/python2.7/dist-packages:/home/zandgren/Software/ros/build/lib/python2.7/dist-packages:$PYTHONPATH" \
-    CATKIN_BINARY_DIR="/home/zandgren/Software/ros/build" \
+    PYTHONPATH="/home/mars/Software/ros/install/lib/python2.7/dist-packages:/home/mars/Software/ros/build/lib/python2.7/dist-packages:$PYTHONPATH" \
+    CATKIN_BINARY_DIR="/home/mars/Software/ros/build" \
     "/usr/bin/python2" \
-    "/home/zandgren/Software/ros/src/odrive_ros/setup.py" \
-    build --build-base "/home/zandgren/Software/ros/build/odrive_ros" \
+    "/home/mars/Software/ros/src/odrive_ros/setup.py" \
+    build --build-base "/home/mars/Software/ros/build/odrive_ros" \
     install \
     $DESTDIR_ARG \
-    --install-layout=deb --prefix="/home/zandgren/Software/ros/install" --install-scripts="/home/zandgren/Software/ros/install/bin"
+    --install-layout=deb --prefix="/home/mars/Software/ros/install" --install-scripts="/home/mars/Software/ros/install/bin"

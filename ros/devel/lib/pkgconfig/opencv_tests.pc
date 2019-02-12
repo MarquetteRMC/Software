@@ -1,0 +1,8 @@
+prefix=/home/mars/Software/ros/devel
+
+Name: opencv_tests
+Description: Description of opencv_tests
+Version: 1.12.8
+Cflags: 
+Libs: -L/home/mars/Software/ros/devel/lib 
+Requires: 

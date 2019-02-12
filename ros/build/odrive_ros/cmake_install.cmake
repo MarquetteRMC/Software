@@ -1,8 +1,8 @@
-# Install script for directory: /home/zandgren/Software/ros/src/odrive_ros
+# Install script for directory: /home/mars/Software/ros/src/odrive_ros
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/zandgren/Software/ros/install")
+  set(CMAKE_INSTALL_PREFIX "/home/mars/Software/ros/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,25 +38,25 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/zandgren/Software/ros/build/odrive_ros/catkin_generated/safe_execute_install.cmake")
+  include("/home/mars/Software/ros/build/odrive_ros/catkin_generated/safe_execute_install.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/zandgren/Software/ros/build/odrive_ros/catkin_generated/installspace/odrive_ros.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/mars/Software/ros/build/odrive_ros/catkin_generated/installspace/odrive_ros.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/odrive_ros/cmake" TYPE FILE FILES
-    "/home/zandgren/Software/ros/build/odrive_ros/catkin_generated/installspace/odrive_rosConfig.cmake"
-    "/home/zandgren/Software/ros/build/odrive_ros/catkin_generated/installspace/odrive_rosConfig-version.cmake"
+    "/home/mars/Software/ros/build/odrive_ros/catkin_generated/installspace/odrive_rosConfig.cmake"
+    "/home/mars/Software/ros/build/odrive_ros/catkin_generated/installspace/odrive_rosConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/odrive_ros" TYPE FILE FILES "/home/zandgren/Software/ros/src/odrive_ros/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/odrive_ros" TYPE FILE FILES "/home/mars/Software/ros/src/odrive_ros/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/odrive_ros" TYPE PROGRAM FILES "/home/zandgren/Software/ros/src/odrive_ros/nodes/odrive_node")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/odrive_ros" TYPE PROGRAM FILES "/home/mars/Software/ros/src/odrive_ros/nodes/odrive_node")
 endif()
 
