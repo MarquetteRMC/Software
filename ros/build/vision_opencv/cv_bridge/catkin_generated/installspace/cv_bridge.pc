@@ -1,8 +1,0 @@
-prefix=/home/mars/Software/ros/install
-
-Name: cv_bridge
-Description: Description of cv_bridge
-Version: 1.12.8
-Cflags: -I/home/mars/Software/ros/install/include -I/usr/include -I/usr/include/opencv
-Libs: -L/home/mars/Software/ros/install/lib -lcv_bridge /usr/lib/x86_64-linux-gnu/libopencv_core.so.3.2.0 /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.3.2.0 /usr/lib/x86_64-linux-gnu/libopencv_highgui.so.3.2.0
-Requires: rosconsole sensor_msgs

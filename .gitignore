@@ -1,3 +1,10 @@
+# files
+
+# folders
+devel/
+build/
+
+# file extensions
 *.d
 *.o
 *.obj
@@ -12,3 +19,4 @@
 *.pickle
 *.deps
 *.sketch
+*.so

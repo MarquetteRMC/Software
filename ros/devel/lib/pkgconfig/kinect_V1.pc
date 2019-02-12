@@ -1,8 +1,0 @@
-prefix=/home/mars/Software/ros/devel
-
-Name: kinect_V1
-Description: Description of kinect_V1
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/mars/Software/ros/devel/lib 
-Requires: 

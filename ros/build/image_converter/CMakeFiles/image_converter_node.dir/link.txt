@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/image_converter_node.dir/src/image_converter_node.cpp.o  -o /home/mars/Software/ros/devel/lib/image_converter/image_converter_node 
