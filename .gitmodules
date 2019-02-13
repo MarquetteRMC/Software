@@ -10,3 +10,6 @@
 [submodule "ros/src/zbar_ros"]
 	path = ros/src/zbar_ros
 	url = https://github.com/MarquetteRMC/zbar_ros.git
+[submodule "ros/src/phidgets_drivers"]
+	path = ros/src/phidgets_drivers
+	url = https://github.com/MarquetteRMC/phidgets_drivers.git
