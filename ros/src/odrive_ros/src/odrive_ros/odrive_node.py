@@ -52,7 +52,7 @@ class ODriveNode(object):
     wheel_track = None
     tyre_circumference = None
     encoder_counts_per_rev = None
-    m_s_to_value = 0
+    m_s_to_value = 0  
     axis_for_right = 0
     
     # Startup parameters
@@ -80,7 +80,7 @@ class ODriveNode(object):
         
         self.publish_odom    = rospy.get_param('~publish_odom', True)
         self.publish_tf      = rospy.get_param('~publish_odom_tf', False)
-        self.odom_topic      = rospy.get_param('~odom_topic', "odom")
+        self.odom_topic      = rospy.get_param('~odom_topic', "odom") #Think we will need to change this topic to our publisher node
         self.odom_frame      = rospy.get_param('~odom_frame', "odom")
         self.base_frame      = rospy.get_param('~base_frame', "base_link")
         self.odom_calc_hz    = rospy.get_param('~odom_calc_hz', 20)
@@ -94,7 +94,7 @@ class ODriveNode(object):
         rospy.Service('engage_motors',     std_srvs.srv.Trigger, self.engage_motor)
         rospy.Service('release_motors',    std_srvs.srv.Trigger, self.release_motor)
 
-        self.vel_subscribe = rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2)
+        self.vel_subscribe = rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2) #subscirber node is good but do need to check the cmd_vel_callback method
         
         self.timer = rospy.Timer(rospy.Duration(0.1), self.timer_check) # stop motors if no cmd_vel received > 1second
                 
@@ -251,6 +251,10 @@ class ODriveNode(object):
         rospy.loginfo("Angular Components: [%f, %f, %f]"%(msg.angular.x, msg.angular.y, msg.angular.z))
 
         # rostopic pub -r 1 /commands/motor/current std_msgs/Float64 -- -1.0
+
+
+
+	#EDIT THESE VALUES AS IT WILL NEED TO CHANGE
 
         # Do velocity processing here:
         # Use the kinematics of your robot to map linear and angular velocities into motor commands
