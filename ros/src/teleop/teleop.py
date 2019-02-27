@@ -81,7 +81,7 @@ class KeyTeleop():
         self._interface = interface
         self._pub_cmd = rospy.Publisher('key_vel', Twist)
 
-        self._hz = rospy.get_param('~hz', 10)
+        self._hz = rospy.get_param('~hz', 2)
 
         self._num_steps = rospy.get_param('~turbo/steps', 4)
 
@@ -168,29 +168,27 @@ class KeyTeleop():
 
         twist = self._get_twist(self._linear, self._angular)
         self._pub_cmd.publish(twist)
-	self.velocity_publisher.publish(twist)
 
 
 class SimpleKeyTeleop():
     def __init__(self, interface):
         self._interface = interface
-	self.velocity_publisher = rospy.Publisher('turtle1/cmd_vel', Twist)
         self.vel_pub = rospy.Publisher('cmd_vel', Twist) 
 
         self._hz = rospy.get_param('~hz', 10)
 
-        self._forward_rate = rospy.get_param('~forward_rate', 0.8)
-        self._backward_rate = rospy.get_param('~backward_rate', 0.5)
+        self._forward_rate = rospy.get_param('~forward_rate', 1.0)
+        self._backward_rate = rospy.get_param('~backward_rate', 1.0)
         self._rotation_rate = rospy.get_param('~rotation_rate', 1.0)
         self._last_pressed = {}
         self._angular = 0
         self._linear = 0
 
     movement_bindings = {
-        curses.KEY_UP:    ( 10,  0),
-        curses.KEY_DOWN:  (-10,  0),
-        curses.KEY_LEFT:  ( 0,  10),
-        curses.KEY_RIGHT: ( 0, -10),
+        curses.KEY_UP:    ( 5,  0),
+        curses.KEY_DOWN:  (-5,  0),
+        curses.KEY_LEFT:  ( 0,  5),
+        curses.KEY_RIGHT: ( 0, -5),
     }
 
     def run(self):
@@ -246,7 +244,6 @@ class SimpleKeyTeleop():
         self._interface.refresh()
 
         twist = self._get_twist(self._linear, self._angular)
-	self.velocity_publisher.publish(twist)
         self.vel_pub.publish(twist)
 
 

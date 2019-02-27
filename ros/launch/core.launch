@@ -1,0 +1,16 @@
+<launch>
+	
+
+	<node
+		pkg="teleop"
+		type="teleop.py"
+		name="teleop"
+		launch-prefix="gnome-terminal -e"
+	/>
+
+	<node
+		pkg="current_sensing"
+		type="battery_current.py"
+		name="battery_current"
+	/>
+</launch>

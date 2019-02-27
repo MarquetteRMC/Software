@@ -1,0 +1,17 @@
+Make sure to tune the gains up when you have everything else working to a stiffness that is applicable to your application:
+
+odrv0.axis0.controller.config.pos_gain = 1
+odrv0.axis0.controller.config.vel_gain = 0.02
+odrv0.axis0.controller.config.vel_integrator_gain = 0.1
+odrv0.axis0.controller.config.vel_limit = 1000
+
+
+
+boot up sequence:
+
+odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+odrv0.axis0.controller.vel_setpoint = 120
+
+# Your motor should spin here
+odrv0.axis0.controller.vel_setpoint = 0
+odrv0.axis0.requested_state = AXIS_STATE_IDLE

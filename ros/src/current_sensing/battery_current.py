@@ -127,7 +127,7 @@ class CurrentReader():
 	    sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 	
 	def onVoltageChangeHandler(self, voltage):
-		current[0] = voltage * 20  
+		current[0] = voltage * 40  
 	
 	def onSensorChangeHandler(self, sensorValue, sensorUnit):
 	    print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)

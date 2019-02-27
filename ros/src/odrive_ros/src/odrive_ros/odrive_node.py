@@ -26,7 +26,7 @@ class ROSLogger(object):
     def error(self, msg):    rospy.logerr(msg)    #  print(msg) #
     def critical(self, msg): rospy.logfatal(msg)  #  print(msg) #
     
-    # use_index = False (bool)
+    #use_index = False (bool)
     # offset_float = 0.590887010098 (float)
     # calib_range = 0.019999999553 (float)
     # mode = 0 (int)
@@ -35,8 +35,8 @@ class ROSLogger(object):
     # idx_search_speed = 10.0 (float)
     # pre_calibrated = False (bool)
 
-#m_s_to_rpm = 60.0/tyre_circumference
-#m_s_to_erpm = 10 * m_s_to_rpm 
+    #m_s_to_rpm = 60.0/tyre_circumference
+    #m_s_to_erpm = 10 * m_s_to_rpm 
 
 # 4096 counts / rev, so 4096 == 1 rev/s
 
@@ -44,37 +44,40 @@ class ROSLogger(object):
 # 1 m/s = 3.6 km/hr
 
 class ODriveNode(object):
+    global wheel_track
     last_speed = 0.0
     driver = None
     last_cmd_vel_time = None
     
     # Robot wheel_track params for velocity -> motor speed conversion
-    wheel_track = None
-    tyre_circumference = None
-    encoder_counts_per_rev = None
+    wheel_track = .6477
+    tyre_circumference = .5282438
+    encoder_counts_per_rev = 24
     m_s_to_value = 0  
     axis_for_right = 0
-    
+
     # Startup parameters
-    connect_on_startup = False
-    calibrate_on_startup = False
-    engage_on_startup = False
+    connect_on_startup = True
+    calibrate_on_startup = True
+    engage_on_startup = True
     
-    def __init__(self):
+    def __init__(self): 
+
         self.axis_for_right = float(rospy.get_param('~axis_for_right', 0)) # if right calibrates first, this should be 0, else 1
-        self.wheel_track = float(rospy.get_param('~wheel_track', 0.285)) # m, distance between wheel centres
-        self.tyre_circumference = float(rospy.get_param('~tyre_circumference', 0.341)) # used to translate velocity commands in m/s into motor rpm
+        self.wheel_track = float(rospy.get_param('~wheel_track', 0.6477)) # m, distance between wheel centres
+        self.tyre_circumference = float(rospy.get_param('~tyre_circumference', 0.5282438)) # used to translate velocity commands in m/s into motor rpm
         
-        self.connect_on_startup   = rospy.get_param('~connect_on_startup', False)
-        self.calibrate_on_startup = rospy.get_param('~calibrate_on_startup', False)
-        self.engage_on_startup    = rospy.get_param('~engage_on_startup', False)
         
-        self.max_speed   = rospy.get_param('~max_speed', 0.5)
+        self.connect_on_startup   = rospy.get_param('~connect_on_startup', True)
+        self.calibrate_on_startup = rospy.get_param('~calibrate_on_startup', True)
+        self.engage_on_startup    = rospy.get_param('~engage_on_startup', True)
+        
+        self.max_speed   = rospy.get_param('~max_speed', 0.3144)
         self.max_angular = rospy.get_param('~max_angular', 1.0) 
         
         self.publish_current = rospy.get_param('~publish_current', True)
         
-        self.has_preroll     = rospy.get_param('~use_preroll', True)
+        self.has_preroll     = rospy.get_param('~use_preroll', False)
                 
         self.publish_current = rospy.get_param('~publish_current', True)
         
@@ -275,6 +278,7 @@ class ODriveNode(object):
             return
         
         # Then set your wheel speeds (using wheel_left and wheel_right as examples)
+		#VERY CONFUSED AS WHAT THESE 4 COMMANDS DO
         #self.left_motor_pub.publish(left_linear_rpm)
         #self.right_motor_pub.publish(right_linear_rpm)
         #wheel_left.set_speed(v_l)
