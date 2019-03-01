@@ -17,10 +17,9 @@ The robot is still in a very early stage, but check back in a few months for pro
 3. Dean Koumoutsos
 4. Zach Nordgren
 5. Tim Campbell
-6. Francesco Fuentes
-7. Nathan Faust
-9. Zach Pederson
-10. Maggie
+6. Nathan Faust
+7. Zach Pederson
+8. Maggie
 
 ```
 
