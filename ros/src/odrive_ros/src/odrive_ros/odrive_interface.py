@@ -169,10 +169,12 @@ class ODriveInterfaceAPI(object):
         
         for i, axis in enumerate(self.axes):
             self.logger.info("Calibrating axis %d..." % i)
-            axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
-            time.sleep(1)
-            while axis.current_state != AXIS_STATE_IDLE:
-                time.sleep(0.1)
+            #axis.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+            axis.motor.config.pre_calibrated = True
+            axis.encoder.config.pre_calibrated = True
+
+            #while axis.current_state != AXIS_STATE_IDLE:
+                #time.sleep(0.1)
             if axis.error != 0:
                 self.logger.error("Failed calibration with axis error 0x%x, motor error 0x%x" % (axis.error, axis.motor.error))
                 return False
@@ -227,7 +229,11 @@ class ODriveInterfaceAPI(object):
         if not self.driver:
             self.logger.error("Not connected.")
             return
-            
+        for axis in self.axes:
+            print("setpoint " + str(axis.motor.current_control.Iq_setpoint))
+            print("current measured " + str(axis.motor.current_control.Iq_measured))
+            print("Torque " + str(8.27 * (axis.motor.current_control.Iq_measured / 250)))
+        print(left_motor_val)
         self.left_axis.controller.vel_setpoint = left_motor_val
         self.right_axis.controller.vel_setpoint = -right_motor_val
 

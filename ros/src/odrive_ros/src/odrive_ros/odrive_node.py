@@ -44,7 +44,7 @@ class ROSLogger(object):
 # 1 m/s = 3.6 km/hr
 
 class ODriveNode(object):
-    global wheel_track
+
     last_speed = 0.0
     driver = None
     last_cmd_vel_time = None
@@ -53,7 +53,7 @@ class ODriveNode(object):
     wheel_track = .6477
     tyre_circumference = .5282438
     encoder_counts_per_rev = 24
-    m_s_to_value = 0  
+    m_s_to_value = 45.433 #change this back to 0. Changed for testing purposes  
     axis_for_right = 0
 
     # Startup parameters
@@ -72,8 +72,8 @@ class ODriveNode(object):
         self.calibrate_on_startup = rospy.get_param('~calibrate_on_startup', True)
         self.engage_on_startup    = rospy.get_param('~engage_on_startup', True)
         
-        self.max_speed   = rospy.get_param('~max_speed', 0.3144)
-        self.max_angular = rospy.get_param('~max_angular', 1.0) 
+        self.max_speed   = rospy.get_param('~max_speed', 80) #was set to .3144 but changed to 50 for testing
+        self.max_angular = rospy.get_param('~max_angular', 50) 
         
         self.publish_current = rospy.get_param('~publish_current', True)
         
@@ -243,15 +243,18 @@ class ODriveNode(object):
     
     def convert(self, forward, ccw):
         angular_to_linear = ccw * (self.wheel_track/2.0) 
-        left_linear_val  = int((forward - angular_to_linear) * self.m_s_to_value)
+
+        #We NEED TO figure out what these variables actually need to be. 
+        #removed int casting from left_linear_val and right_linear_val. Will change if this breaks everything
+        left_linear_val  = int((forward - angular_to_linear) * self.m_s_to_value)  
         right_linear_val = int((forward + angular_to_linear) * self.m_s_to_value)
-    
+
         return left_linear_val, right_linear_val
 
     def cmd_vel_callback(self, msg):
-        rospy.loginfo("Received a /cmd_vel message!")
-        rospy.loginfo("Linear Components: [%f, %f, %f]"%(msg.linear.x, msg.linear.y, msg.linear.z))
-        rospy.loginfo("Angular Components: [%f, %f, %f]"%(msg.angular.x, msg.angular.y, msg.angular.z))
+        #rospy.loginfo("Received a /cmd_vel message!")
+        #rospy.loginfo("Linear Components: [%f, %f, %f]"%(msg.linear.x, msg.linear.y, msg.linear.z))
+        #rospy.loginfo("Angular Components: [%f, %f, %f]"%(msg.angular.x, msg.angular.y, msg.angular.z))
 
         # rostopic pub -r 1 /commands/motor/current std_msgs/Float64 -- -1.0
 
@@ -269,13 +272,15 @@ class ODriveNode(object):
         #right_linear_rpm = (msg.linear.x + angular_to_linear) * m_s_to_erpm
         
         x = max(min(msg.linear.x, self.max_speed),   -self.max_speed)
-        z = max(min(msg.linear.x, self.max_angular), -self.max_angular)
+        z = max(min(msg.angular.z, self.max_angular), -self.max_angular) #is msg.linear.x correct? shouldn't this be msg.angular.z???
         
         left_linear_val, right_linear_val = self.convert(x,z)
-        
+
         # if wheel speed = 0, stop publishing after sending 0 once. #TODO add error term, work out why VESC turns on for 0 rpm
         if self.last_speed == 0 and abs(left_linear_val) == 0 and abs(right_linear_val) == 0:
             return
+        print("LEFT VALUE" + str(left_linear_val))
+        print("Right Value" + str(right_linear_val))
         
         # Then set your wheel speeds (using wheel_left and wheel_right as examples)
 		#VERY CONFUSED AS WHAT THESE 4 COMMANDS DO
@@ -283,8 +288,8 @@ class ODriveNode(object):
         #self.right_motor_pub.publish(right_linear_rpm)
         #wheel_left.set_speed(v_l)
         #wheel_right.set_speed(v_r)
-        
-        rospy.logdebug("Driving left: %d, right: %d, from linear.x %.2f and angular.z %.2f" % (left_linear_val, right_linear_val, msg.linear.x, msg.angular.z))
+
+        #rospy.loginfo("Driving left: %d, right: %d, from linear.x %.2f and angular.z %.2f" % (left_linear_val, right_linear_val, msg.linear.x, msg.angular.z))
         self.driver.drive(left_linear_val, right_linear_val)
 
         self.last_speed = max(abs(left_linear_val), abs(right_linear_val))
