@@ -185,10 +185,10 @@ class SimpleKeyTeleop():
         self._linear = 0
 
     movement_bindings = {
-        curses.KEY_UP:    ( 100,  0),
-        curses.KEY_DOWN:  (-100,  0),
-        curses.KEY_LEFT:  ( 0,  100),
-        curses.KEY_RIGHT: ( 0, -100),
+        curses.KEY_UP:    ( 325,  0),
+        curses.KEY_DOWN:  (-325,  0),
+        curses.KEY_LEFT:  ( 0,  -325),
+        curses.KEY_RIGHT: ( 0, 325),
     }
 
     def run(self):

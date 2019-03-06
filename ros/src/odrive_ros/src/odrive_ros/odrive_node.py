@@ -8,6 +8,7 @@ import tf_conversions
 import tf2_ros
 
 from std_msgs.msg import Float64
+from std_msgs.msg import String
 from geometry_msgs.msg import Twist, TransformStamped
 from nav_msgs.msg import Odometry
 import std_srvs.srv
@@ -72,8 +73,8 @@ class ODriveNode(object):
         self.calibrate_on_startup = rospy.get_param('~calibrate_on_startup', True)
         self.engage_on_startup    = rospy.get_param('~engage_on_startup', True)
         
-        self.max_speed   = rospy.get_param('~max_speed', 80) #was set to .3144 but changed to 50 for testing
-        self.max_angular = rospy.get_param('~max_angular', 50) 
+        self.max_speed   = rospy.get_param('~max_speed', 75) #was set to .3144 but changed to 50 for testing
+        self.max_angular = rospy.get_param('~max_angular', 200) 
         
         self.publish_current = rospy.get_param('~publish_current', True)
         
@@ -97,7 +98,7 @@ class ODriveNode(object):
         rospy.Service('engage_motors',     std_srvs.srv.Trigger, self.engage_motor)
         rospy.Service('release_motors',    std_srvs.srv.Trigger, self.release_motor)
 
-        self.vel_subscribe = rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2) #subscirber node is good but do need to check the cmd_vel_callback method
+        self.vel_subscribe = rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback, queue_size=2) #subscirber node is good but do need to check the cmd_vel_callback method 
         
         self.timer = rospy.Timer(rospy.Duration(0.1), self.timer_check) # stop motors if no cmd_vel received > 1second
                 
@@ -270,7 +271,7 @@ class ODriveNode(object):
         #angular_to_linear = msg.angular.z * (wheel_track/2.0) 
         #left_linear_rpm  = (msg.linear.x - angular_to_linear) * m_s_to_erpm
         #right_linear_rpm = (msg.linear.x + angular_to_linear) * m_s_to_erpm
-        
+
         x = max(min(msg.linear.x, self.max_speed),   -self.max_speed)
         z = max(min(msg.angular.z, self.max_angular), -self.max_angular) #is msg.linear.x correct? shouldn't this be msg.angular.z???
         
@@ -279,8 +280,6 @@ class ODriveNode(object):
         # if wheel speed = 0, stop publishing after sending 0 once. #TODO add error term, work out why VESC turns on for 0 rpm
         if self.last_speed == 0 and abs(left_linear_val) == 0 and abs(right_linear_val) == 0:
             return
-        print("LEFT VALUE" + str(left_linear_val))
-        print("Right Value" + str(right_linear_val))
         
         # Then set your wheel speeds (using wheel_left and wheel_right as examples)
 		#VERY CONFUSED AS WHAT THESE 4 COMMANDS DO
