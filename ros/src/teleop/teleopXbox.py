@@ -22,7 +22,7 @@ class xboxControllerTeleop():
         self._linear = 0
 
         #could be js0-3 look at the light on the xbox controller and subtract 1 from where the light is
-        self._infile_path = "/dev/input/js1"
+        self._infile_path = "/dev/input/js0"
 
         # The joysticks range from -32768 to 32767
         self._left_joy_LR_thresh = 21000
@@ -101,7 +101,7 @@ class xboxControllerTeleop():
 
         elif number == 3: #right joystick up down
             if value > self._right_joy_UD_thresh:
-                print("left joy down")
+                print("right joy down")
             elif value < -self._right_joy_UD_thresh:
                 print("right joy up")
             self._right_joy_vertical = value
