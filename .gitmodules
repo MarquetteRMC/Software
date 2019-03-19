@@ -13,3 +13,6 @@
 [submodule "ros/src/phidgets_drivers"]
 	path = ros/src/phidgets_drivers
 	url = https://github.com/MarquetteRMC/phidgets_drivers.git
+[submodule "ros/src/roboclaw_ros"]
+	path = ros/src/roboclaw_ros
+	url = https://github.com/MarquetteRMC/roboclaw_ros.git
