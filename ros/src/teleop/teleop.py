@@ -189,6 +189,8 @@ class SimpleKeyTeleop():
         curses.KEY_DOWN:  (-325,  0),
         curses.KEY_LEFT:  ( 0,  -325),
         curses.KEY_RIGHT: ( 0, 325),
+        curses.KEY_PPAGE: (10,0),
+        curses.KEY_NPAGE: (-10,0),
     }
 
     def run(self):
