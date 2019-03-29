@@ -278,8 +278,9 @@ class ODriveNode(object):
         left_linear_val, right_linear_val = self.convert(x,z)
 
         # if wheel speed = 0, stop publishing after sending 0 once. #TODO add error term, work out why VESC turns on for 0 rpm
-        if self.last_speed == 0 and abs(left_linear_val) == 0 and abs(right_linear_val) == 0:
+        if self.last_speed < 0+0.001 and abs(left_linear_val) < 0+0.001 and abs(right_linear_val) < 0+0.001:
             return
+        
         
         # Then set your wheel speeds (using wheel_left and wheel_right as examples)
 		#VERY CONFUSED AS WHAT THESE 4 COMMANDS DO

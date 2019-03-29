@@ -35,8 +35,7 @@ except ImportError:
 * @param self The Phidget channel that fired the attach event
 """
 class CurrentReader():
-	#global Current_Reading
-	#Current_Reading = 0
+	
 	global onAttachHandler
 	global onDetachHandler
 	global onErrorHandler
@@ -127,7 +126,8 @@ class CurrentReader():
 	    sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 	
 	def onVoltageChangeHandler(self, voltage):
-		current[0] = voltage * 40  
+
+   		current[0] = voltage * 40  
 	
 	def onSensorChangeHandler(self, sensorValue, sensorUnit):
 	    print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)
@@ -193,8 +193,7 @@ class CurrentReader():
 				ch.openWaitForAttachment(5000)
 			except PhidgetException as e:
 				PrintOpenErrorMessage(e, ch)
-				raise EndProgramSignal("Program Terminated: Open Failed")
-			
+				raise EndProgramSign00al("Program Terminated: Open Failed")
 			
 
 			print("running...")

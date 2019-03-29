@@ -131,6 +131,7 @@ class ODriveInterfaceAPI(object):
         try:
             self.driver = odrive.find_any(timeout=30, logger=self.logger)
             self.axes = (self.driver.axis0, self.driver.axis1)
+
         except:
             self.logger.error("No ODrive found. Is device powered?")
             return False
@@ -234,6 +235,11 @@ class ODriveInterfaceAPI(object):
             print("current measured " + str(axis.motor.current_control.Iq_measured))
             print("Torque " + str(8.27 * (axis.motor.current_control.Iq_measured / 250)))
         print(left_motor_val)
+        
+        if (left_motor_val == 0 and right_motor_val == 0):
+            self.left_axis.controller.vel_setpoint = 0
+            self.right_axis.controller.vel_setpoint = 0   
+        
         self.left_axis.controller.vel_setpoint = left_motor_val
         self.right_axis.controller.vel_setpoint = -right_motor_val
 
