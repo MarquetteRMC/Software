@@ -4,8 +4,8 @@ Base Locomotion Motors
 Front Right = A1  -- axis1
 Front Left =  A0  -- axis0
 
-Digging Motors = B1  -- axis1
-Dumping Motor for conveyor belt = B0 -- axis0
+Dumping Motors = B1  -- axis1
+Digging Motor for conveyor belt = B0 -- axis0 TBD
 
 Spare = 5
 
