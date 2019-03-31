@@ -175,7 +175,7 @@ class SimpleKeyTeleop():
         self._interface = interface
         self.vel_pub = rospy.Publisher('cmd_vel', Twist) 
 
-        self._hz = rospy.get_param('~hz', 10)
+        self._hz = rospy.get_param('~hz', 20)
 
         self._forward_rate = rospy.get_param('~forward_rate', 1.0)
         self._backward_rate = rospy.get_param('~backward_rate', 1.0)
@@ -183,6 +183,10 @@ class SimpleKeyTeleop():
         self._last_pressed = {}
         self._angular = 0
         self._linear = 0
+        self._last_key = 0
+        self._first_press = True
+        self._start_first_press = 0
+        self._first_in_a_while_time = 0
 
     movement_bindings = {
         curses.KEY_UP:    ( 325,  0),
@@ -215,9 +219,25 @@ class SimpleKeyTeleop():
     def _set_velocity(self):
         now = rospy.get_time()
         keys = []
+        
+        if self._first_press:
+            delay = 0.6
+        else:
+            delay = 0.1
+
+            
         for a in self._last_pressed:
-            if now - self._last_pressed[a] < 0.4:
+            if now - self._start_first_press > 0.6:
+                self._first_press = False
+            if now - self._last_pressed[a] < delay: #this puts a half second delay after releasing a key. I want to make it so it doesn't so this
+                if now - self._first_in_a_while_time > 0.5 or self._last_key != a:
+                    self._start_first_press = now
+                    self._first_press = True
                 keys.append(a)
+                self._last_key = a;
+                self._first_in_a_while_time = now
+                break
+        
         linear = 0.0
         angular = 0.0
         for k in keys:
@@ -228,6 +248,7 @@ class SimpleKeyTeleop():
             linear = linear * self._forward_rate
         else:
             linear = linear * self._backward_rate
+            
         angular = angular * self._rotation_rate
         self._angular = angular
         self._linear = linear

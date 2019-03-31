@@ -73,8 +73,8 @@ class ODriveNode(object):
         self.calibrate_on_startup = rospy.get_param('~calibrate_on_startup', True)
         self.engage_on_startup    = rospy.get_param('~engage_on_startup', True)
         
-        self.max_speed   = rospy.get_param('~max_speed', 75) #was set to .3144 but changed to 50 for testing
-        self.max_angular = rospy.get_param('~max_angular', 200) 
+        self.max_speed   = rospy.get_param('~max_speed', 88) #was set to .3144 but changed to 50 for testing
+        self.max_angular = rospy.get_param('~max_angular', 270) 
         
         self.publish_current = rospy.get_param('~publish_current', True)
         
