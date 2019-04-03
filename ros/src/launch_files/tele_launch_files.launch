@@ -1,0 +1,7 @@
+<launch>
+    <node pkg="teleop" type="teleop.py" name="key_teleop" respawn="false" output="screen" launch-prefix="xterm -e" />
+    <node pkg="odrive_ros" type="odrive_node.py" name="odrive_node" respawn="false" output="screen" launch-prefix="xterm -e" />
+    <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" respawn="true" output="screen" launch-prefix="xterm -e" />
+    <node pkg="roboclaw_node" type="roboclaw_node.py" name="roboclaw_node" respawn="false" output="screen" launch-prefix="xterm -e" />
+    
+</launch>
