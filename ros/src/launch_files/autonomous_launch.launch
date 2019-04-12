@@ -1,0 +1,8 @@
+<launch>
+    <node pkg="odrive_ros" type="odrive_node.py" name="odrive_node" respawn="false" output="screen" launch-prefix="xterm -e" />
+    <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" respawn="true" output="screen" launch-prefix="xterm -e" />
+    <node pkg="roboclaw_node" type="roboclaw_node.py" name="roboclaw_node" respawn="false" output="screen" launch-prefix="xterm -e" />
+    <node pkg="current_sensing" type="VoltageInput.py" name="battery_draw" respawn="true" output="screen" launch-prefix="xterm -e" />
+    <node pkg="qr_detector" type="qr_detect_1" name="qr_detect_node" respawn="false" output="screen" launch-prefix="xterm -e" />
+    
+</launch>
