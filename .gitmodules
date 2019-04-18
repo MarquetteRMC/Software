@@ -16,3 +16,6 @@
 [submodule "ros/src/roboclaw_ros"]
 	path = ros/src/roboclaw_ros
 	url = https://github.com/MarquetteRMC/roboclaw_ros.git
+[submodule "ros/src/vision_visp"]
+	path = ros/src/vision_visp
+	url = https://github.com/lagadic/vision_visp.git

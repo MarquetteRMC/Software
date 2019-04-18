@@ -258,8 +258,7 @@ class ODriveNode(object):
         #rospy.loginfo("Angular Components: [%f, %f, %f]"%(msg.angular.x, msg.angular.y, msg.angular.z))
 
         # rostopic pub -r 1 /commands/motor/current std_msgs/Float64 -- -1.0
-
-
+      
 
 	#EDIT THESE VALUES AS IT WILL NEED TO CHANGE
 
@@ -272,11 +271,22 @@ class ODriveNode(object):
         #left_linear_rpm  = (msg.linear.x - angular_to_linear) * m_s_to_erpm
         #right_linear_rpm = (msg.linear.x + angular_to_linear) * m_s_to_erpm
 
-        x = max(min(msg.linear.x, self.max_speed),   -self.max_speed)
-        z = max(min(msg.angular.z, self.max_angular), -self.max_angular) #is msg.linear.x correct? shouldn't this be msg.angular.z???
+        linear_x = twist.linear.x
+        z = twist.angular.z
+               
+        if (linear_x != 325.0 and linear_x != -325.0):
+            linear_x = 0
         
-        left_linear_val, right_linear_val = self.convert(x,z)
-
+        if (z != 325.0 and z != -325.0):
+            z = 0
+        
+        if linear_x > self.max_speed:
+            linear_x = self.max_speed
+        if linear_x < -self.max_speed:
+            linear_x = -self.max_speed
+            
+        left_linear_val, right_linear_val = self.convert(linear_x,z)
+        
         # if wheel speed = 0, stop publishing after sending 0 once. #TODO add error term, work out why VESC turns on for 0 rpm
         if self.last_speed < 0+0.001 and abs(left_linear_val) < 0+0.001 and abs(right_linear_val) < 0+0.001:
             return
@@ -432,7 +442,7 @@ class ODriveNode(object):
             
 
 def start_odrive():
-    rospy.init_node('odrive')
+    rospy.init_node('odrive_locomotion')
     odrive_node = ODriveNode()
     
     rospy.spin() 

@@ -18,7 +18,7 @@ ch.setLevel(logging.DEBUG)
 default_logger.addHandler(ch)
 
 class ODriveInterfaceSerial(object):
-    port = None
+    port = None   #believe we just need to hardcode the separate port /dev/ttyamc0 to this value for the separate nodes to determine which odrive is which
     
     def __init__(self, logger=None):
         self.logger = logger if logger else default_logger
@@ -129,7 +129,7 @@ class ODriveInterfaceAPI(object):
             self.logger.info("Already connected. Disconnecting and reconnecting.")
         
         try:
-            self.driver = odrive.find_any(timeout=30, logger=self.logger)
+            self.driver = odrive.find_any(path="usb", serial_number="207B37943548", search_cancellation_token=None, channel_termination_token=None, timeout=30, logger=self.logger)
             self.axes = (self.driver.axis0, self.driver.axis1)
 
         except:

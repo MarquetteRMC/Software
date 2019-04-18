@@ -7,6 +7,7 @@ Last Date edit: 4/12/2019
 
 #include "std_msgs/String.h"
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Imu.h>
 #include "ros/ros.h"
 #include "opencv/cv.h"
 #include <time.h>
@@ -22,21 +23,22 @@ std::string barcode_data;
 
 
 
-void command_vel_callback(const std_msgs::String qr_msg){
+void qr_find_callback(const std_msgs::String qr_msg){
+     			
+	barcode_data = qr_msg.data;    
+}
+
+void IMU_callback(const sensor_msgs::Imu::ConstPtr &ImuData){
     
-    //geometry_msgs::Twist twist;
-   	//ros::Publisher test = nh.advertise<geometry_msgs::Twist>("cmd_vel",10);
-   			
-	barcode_data = qr_msg.data;
-	ROS_INFO_STREAM(barcode_data);
-    
+
 }
 
 int main(int argc, char **argv){
     ros::init(argc, argv, "command_velocity_publisher");
     ros::NodeHandle nh;
     ros::Publisher vel_publisher = nh.advertise<geometry_msgs::Twist>("cmd_vel",10);
-    ros::Subscriber qr_sub = nh.subscribe("qr_codes", 10, command_vel_callback);
+    ros::Subscriber qr_sub = nh.subscribe("qr_codes", 10, qr_find_callback);
+    ros::Subscriber IMU_sub = nh.subscribe("imu/data_raw", 10, IMU_callback);
     ros::Rate loop_rate(10);
 
     geometry_msgs::Twist twist;
