@@ -19,3 +19,6 @@
 [submodule "ros/src/vision_visp"]
 	path = ros/src/vision_visp
 	url = https://github.com/lagadic/vision_visp.git
+[submodule "ros/src/imu_tools"]
+	path = ros/src/imu_tools
+	url = https://github.com/MarquetteRMC/imu_tools.git
