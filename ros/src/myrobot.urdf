@@ -1,0 +1,146 @@
+<?xml version="1.0" ?>
+<robot name="visual">
+    <material name="blue">
+        <color rgba="0 0 0.8 1" />
+    </material>
+    <material name="black">
+        <color rgba="0 0 0 1" />
+    </material>
+    <material name="white">
+        <color rgba="1 1 1 1" />
+    </material>
+    <material name="red">
+        <color rgba="1 0 0 0" />
+    </material>
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.3429 0.5334 0.1016" />
+            </geometry>
+            <material name="white" />
+            <origin xyz="0 0 0" />
+        </visual>
+    </link>
+    <link name="right_wheel">
+        <visual>
+            <origin rpy="1.57075 0 0" xyz="0 0 0" />
+            <geometry>
+                <cylinder length="0.071" radius="0.084074" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="right_wheel_joint" type="continuous">
+        <axis rpy="0 0 0" xyz="0 1 0" />
+        <parent link="base_link" />
+        <child link="right_wheel" />
+        <origin rpy="0 0 0" xyz="0.05715 -0.3022 0" />
+    </joint>
+    <link name="left_wheel">
+        <visual>
+            <origin rpy="1.57075 0 0" xyz="0 0 0" />
+            <geometry>
+                <cylinder length="0.071" radius="0.084074" />
+            </geometry>
+            <material name="black" />
+        </visual>
+    </link>
+    <joint name="left_wheel_joint" type="continuous">
+        <axis rpy="0 0 0" xyz="0 1 0" />
+        <parent link="base_link" />
+        <child link="left_wheel" />
+        <origin rpy="0 0 0" xyz="0.05715 0.3022 0" />
+    </joint>
+    <link name="imu">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 -0.0065" />
+            <geometry>
+                <box size="0.035 0.035 0.013" />
+            </geometry>
+            <material name="red" />
+        </visual>
+    </link>
+    <joint name="base_to_imu" type="fixed">
+        <parent link="base_link" />
+        <child link="imu" />
+        <origin rpy="3.1416 0 0" xyz="0 0 0.4" />
+    </joint>
+    <link name="lever_arm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0.38735 0 0.023" />
+            <geometry>
+                <box size="0.7747 0.0254 0.046" />
+            </geometry>
+            <material name="white" />
+        </visual>
+    </link>
+    <joint name="base_to_lever_arm" type="revolute">
+        <parent link="base_link" />
+        <child link="lever_arm" />
+        <axis xyz="0 1 0" />
+        <limit effort="1000.0" lower="5.5676" upper="6.1832" velocity="1" />
+        <origin xyz="-0.17145 0 0.034925" />
+    </joint>
+    <link name="digging_arm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0.307975 0 0" />
+            <geometry>
+                <box size="0.61595 0.0222 0.07" />
+            </geometry>
+            <material name="white" />
+        </visual>
+    </link>
+    <joint name="lever_arm_to_digging_arm" type="revolute">
+        <parent link="lever_arm" />
+        <child link="digging_arm" />
+        <axis xyz="0 1 0" />
+        <limit effort="1000.0" lower="1.2" upper="2" velocity="1" />
+        <origin xyz="0.7747 0 -0.1016" />
+    </joint>
+    
+<transmission name="trans_right_wheel_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_wheel_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_wheel_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_left_wheel_joint">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_wheel_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_wheel_joint_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_base_to_lever_arm">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="base_to_lever_arm">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="base_to_lever_arm_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <transmission name="trans_lever_arm_to_digging_arm">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="lever_arm_to_digging_arm">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="lever_arm_to_digging_arm_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/</robotNamespace>
+        </plugin>
+    </gazebo>
+</robot>

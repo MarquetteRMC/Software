@@ -22,3 +22,6 @@
 [submodule "ros/src/imu_tools"]
 	path = ros/src/imu_tools
 	url = https://github.com/MarquetteRMC/imu_tools.git
+[submodule "ros/src/openni_camera"]
+	path = ros/src/openni_camera
+	url = https://github.com/MarquetteRMC/openni_camera.git
