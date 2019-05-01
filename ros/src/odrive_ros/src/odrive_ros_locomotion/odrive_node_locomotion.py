@@ -271,8 +271,8 @@ class ODriveNode(object):
         #left_linear_rpm  = (msg.linear.x - angular_to_linear) * m_s_to_erpm
         #right_linear_rpm = (msg.linear.x + angular_to_linear) * m_s_to_erpm
 
-        linear_x = twist.linear.x
-        z = twist.angular.z
+        linear_x = msg.linear.x
+        z = msg.angular.z
                
         if (linear_x != 325.0 and linear_x != -325.0):
             linear_x = 0

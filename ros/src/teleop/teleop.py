@@ -204,7 +204,7 @@ class SimpleKeyTeleop():
         curses.KEY_END: (-50,0),
         curses.KEY_HOME: (50,0),
         #Dumping Motors
-        curses.KEY_BACKSPACE: (320,0),
+        curses.KEY_BACKSPACE: (-60,0),
     }
 
     def run(self):

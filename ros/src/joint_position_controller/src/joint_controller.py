@@ -19,8 +19,8 @@ class Node:
         rospy.on_shutdown(self.shutdown)
         rospy.loginfo("Setting up joint_controller_node")
 
-        self.pitch_pub = rospy.Publisher("roboclaw/pitch_vel",Twist)
-        self.height_pub = rospy.Publisher("roboclaw/height_vel",Twist)
+        self.pitch_pub = rospy.Publisher("roboclaw/pitch_vel",Twist,queue_size=10)
+        self.height_pub = rospy.Publisher("roboclaw/height_vel",Twist,queue_size=10)
         self.joint_pub = rospy.Publisher('arm_joint_state',JointState,queue_size=10)
         self.pitch_sub = rospy.Subscriber('roboclaw/pitch_state',JointState,self.pitch_pos_callback)
         self.height_sub = rospy.Subscriber('roboclaw/height_state',JointState,self.height_pos_callback)
@@ -83,12 +83,12 @@ class Node:
     def pitch_pos_callback(self, msg):
         self.pitch_pos['m1'] = msg.position[0]
         self.pitch_pos['m2'] = msg.position[1]
-        rospy.logdebug("pitch m1 %d", self.pitch_pos['m1'])
+        rospy.loginfo("pitch m1 %d", self.pitch_pos['m1'])
 
     def height_pos_callback(self, msg):
         self.height_pos['m1'] = msg.position[0]
         self.height_pos['m2'] = msg.position[1]
-        rospy.logdebug("height m1 %d", self.pitch_pos['m1'])
+        rospy.loginfo("height m1 %d", self.pitch_pos['m1'])
 
     def publish_arm_state(self):
             arm_msg = JointState()

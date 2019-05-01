@@ -234,12 +234,13 @@ class ODriveInterfaceAPI(object):
             print("setpoint " + str(axis.motor.current_control.Iq_setpoint))
             print("current measured " + str(axis.motor.current_control.Iq_measured))
             print("Torque " + str(8.27 * (axis.motor.current_control.Iq_measured / 250)))
-        print(left_motor_val)
         
         if (left_motor_val == 0 and right_motor_val == 0):
             self.left_axis.controller.vel_setpoint = 0
             self.right_axis.controller.vel_setpoint = 0   
         
+        print("left_motor_val " + str(left_motor_val))
+        print("right_motor_val " + str(right_motor_val))
         self.left_axis.controller.vel_setpoint = left_motor_val
         self.right_axis.controller.vel_setpoint = -right_motor_val
 

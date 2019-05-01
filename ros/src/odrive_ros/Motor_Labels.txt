@@ -14,3 +14,25 @@ Odrive controllers Labels
 Locomotion Controller = 1 
 
 Digging & and Dumping = 2
+
+
+VGA Labels
+
+15 Vcc
+14 Hall A
+13 Hall B
+12 Hall C
+7  GND
+11 C
+6  B
+1  A
+
+
+RoboClaw Wiring:
+
+1 +
+6 -
+15 +5
+14 GND
+13 Signal
+

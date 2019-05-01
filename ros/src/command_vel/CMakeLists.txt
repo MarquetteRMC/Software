@@ -23,6 +23,6 @@ include_directories(
 
 
 
-add_executable(my_command_vels src/command_vel.cpp)
-target_link_libraries(my_command_vels ${catkin_LIBRARIES})
+add_executable(my_control src/main_control.cpp)
+target_link_libraries(my_control ${catkin_LIBRARIES})
 

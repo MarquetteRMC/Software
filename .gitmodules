@@ -25,3 +25,6 @@
 [submodule "ros/src/openni_camera"]
 	path = ros/src/openni_camera
 	url = https://github.com/MarquetteRMC/openni_camera.git
+[submodule "ros/src/fiducials"]
+	path = ros/src/fiducials
+	url = https://github.com/MarquetteRMC/fiducials.git

@@ -276,33 +276,33 @@ class ODriveNode(object):
         linear_x = twist.linear.x
         z = 0
         
-        Digging = False
+        #Digging = False
         Dumping = False
         Digging_Forward = False
         Digging_Backwards = False
         
         
         'If dumping trigger the dumping flag'
-        if (linear_x == 320.0 and Dumping == False):
-            linear_x = 320.0
+        if (linear_x == -60.0):
+            #linear_x = -300.0
             Dumping = True
-        
+             
         'If digging trigger the digging flag'
         if (linear_x == 50.0):
             Digging_Forward = True
         if (linear_x == -50.0):
             Digging_Backwards = True
             
-        if (linear_x == 50.0 or linear_x == -50.0 and Digging == False):
-            Digging = True
-            if(Digging_Forward == True):
-                linear_x = 50.0
-            if(Digging_Backwards == True):
-                linear_x = -50.0
+        #if (linear_x == 50.0 or linear_x == -50.0 and Digging == False):
+        #    Digging = True
+        #    if(Digging_Forward == True):
+        #        linear_x = 50.0
+        #    if(Digging_Backwards == True):
+        #        linear_x = -50.0
 
             
         'Set velocity to 0 if neither digging or dumping commands are sent'
-        if (Digging == False and Dumping == False):
+        if (Digging_Forward == False and Digging_Backwards == False and Dumping == False):
             linear_x = 0.0
         
         
@@ -316,8 +316,10 @@ class ODriveNode(object):
         if (Dumping == True):
             right_linear_val = 0
         
-        if (Digging == True):
+        if (Digging_Forward == True):
             left_linear_val = 0
+	if (Digging_Backwards == True):
+	    left_linear_val = 0
 
         # if wheel speed = 0, stop publishing after sending 0 once. #TODO add error term, work out why VESC turns on for 0 rpm
         if self.last_speed < 0+0.001 and abs(left_linear_val) < 0+0.001 and abs(right_linear_val) < 0+0.001:
