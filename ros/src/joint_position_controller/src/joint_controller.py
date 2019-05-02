@@ -24,25 +24,31 @@ class Node:
         self.height_pub = rospy.Publisher("roboclaw/height_vel",Twist,queue_size=10)
         self.joint_pub = rospy.Publisher('arm_joint_state',JointState,queue_size=10)
 
-        self.pitch_sub = rospy.Subscriber('roboclaw/pitch_state',JointState,self.pitch_pos_callback)
-        self.height_sub = rospy.Subscriber('roboclaw/height_state',JointState,self.height_pos_callback)
-        self.joint_status_pub = rospy.Suscriber('joint_states',JointState,self.joint_states_callback)
+        self.pitch_sub = rospy.Subscriber('roboclaw/pitch',JointState,self.pitch_pos_callback)
+        self.height_sub = rospy.Subscriber('roboclaw/height',JointState,self.height_pos_callback)
+        self.joint_status_pub = rospy.Subscriber('joint_states',JointState,self.joint_states_callback)
 
         self.rate = rospy.Rate(5)
 
         self.height_min_length = 15.71
         self.height_max_length = 25.55
+        self.height_stroke_length = self.height_max_length - self.height_min_length
 
         self.pitch_min_length = 11.69
         self.pitch_max_length = 17.6
+        self.pitch_stroke_length = self.pitch_max_length - self.pitch_min_length
 
         self.h1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
         self.h2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
-        self.p1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
-        self.p2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.p1_pid = PID(1,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.p2_pid = PID(0.8,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
 
-        self.h_params = {"m1":78,"m2":78}
-        self.p_params = {"m1":78,"m2":78}
+        self.MAX_ENC = 2047
+        self.pe_div = 6
+        self.he_div = 12
+
+        self.h_params = {"m1":0,"m2":0}
+        self.p_params = {"m1":0,"m2":0}
 
         self.height_pos = {"m1":0,"m2":0}
         self.pitch_pos = {"m1":0,"m2":0}
@@ -61,90 +67,91 @@ class Node:
         #self.p2_pid.set_auto_mode(True,last_output=0.0)
 
         while not rospy.is_shutdown():
-
+            
             h_output = self.h1_pid(self.height_pos['m1'])
             p_output = self.p1_pid(self.pitch_pos['m1'])
+            #rospy.loginfo("actual pos h %d, p %d", self.height_pos['m1'],self.pitch_pos['m1'])
+            rospy.loginfo("pid output h %d, p %d", h_output,p_output)
 
-
-            self.publish_pitch_vel(p_output,p_output)
+            self.publish_pitch_vel(-p_output,-p_output)
             self.publish_height_vel(h_output,h_output)
 
-            this.publish_arm_state()
-            rate.sleep()
+            self.publish_arm_state()
+            self.rate.sleep()
 
 
     def shutdown(self):
         rospy.loginfo("Shutting down joint_controller_node")
 
     def pitch_pos_callback(self, msg):
-        self.pitch_pos['m1'] = msg.position[0]
-        self.pitch_pos['m2'] = msg.position[1]
-        rospy.loginfo("pitch m1 %d", self.pitch_pos['m1'])
+        if msg.position[0] < 0.1 or msg.position[0] < 0.1:
+            return
+        self.pitch_pos['m1'] = int(msg.position[0]/self.pe_div)
+        self.pitch_pos['m2'] = int(msg.position[1]/self.pe_div)
+        #rospy.loginfo("pitch m1 %d", self.pitch_pos['m1'])
 
     def height_pos_callback(self, msg):
-        self.height_pos['m1'] = msg.position[0]
-        self.height_pos['m2'] = msg.position[1]
-        rospy.loginfo("height m1 %d", self.pitch_pos['m1'])
+        if msg.position[0] < 0.1 or msg.position[0] < 0.1:
+            return
+        self.height_pos['m1'] = int(msg.position[0]/self.he_div)
+        self.height_pos['m2'] = int(msg.position[1]/self.he_div)
+        #rospy.loginfo("height m1 %d", self.height_pos['m1'])
     
     def joint_states_callback(self,msg):
-        print(msg)
         height_angle_target = msg.position[2]
         height_inch_target = self.height_angle_to_dist(height_angle_target)
         height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m1'])
-        self.h1_pid.setpoint = height_enc_target
+        self.h1_pid.setpoint = int(height_enc_target/self.he_div)
         # height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m2'])
         # self.h2_pid.setpoint = height_enc_target
 
         pitch_angle_target = msg.position[3]
         pitch_inch_target = self.pitch_angle_to_dist(pitch_angle_target)
         pitch_enc_target = self.pitch_inch_to_enc(pitch_inch_target,self.p_params['m1'])
-        self.p1_pid.setpoint = pitch_enc_target
+        self.p1_pid.setpoint = int(pitch_enc_target/self.pe_div)
         # pitch_enc_target = self.pitch_inch_to_enc(pitch_inch_target,self.p_params['m2'])
         # self.p2_pid.setpoint = pitch_enc_target
+        #rospy.loginfo("setpoint h %d, p %d", height_enc_target , pitch_enc_target)
 
     def publish_arm_state(self):
             arm_msg = JointState()
             arm_msg.header = Header()
             arm_msg.header.stamp = rospy.Time.now()
             arm_msg.name = ['height', 'pitch']
-            height_pos_inch = self.height_enc_to_inch(self.height_pos)
-            pitch_pos_inch = self.pitch_enc_to_inch(self.pitch_pos)
-            height_angle = this.height_dist_to_angle(height_pos_inch)
-            pitch_angle = this.pitch_dist_to_angle(pitch_pos_inch)
+            height_pos_inch = self.height_enc_to_inch(self.height_pos['m1'],self.h_params['m1'])
+            pitch_pos_inch = self.pitch_enc_to_inch(self.pitch_pos['m1'],self.p_params['m1'])
+            height_angle = self.height_dist_to_angle(height_pos_inch)
+            pitch_angle = self.pitch_dist_to_angle(pitch_pos_inch)
             arm_msg.position = [height_angle, pitch_angle]
-            self.joint_pub(arm_msg)
+            self.joint_pub.publish(arm_msg)
 
     def publish_pitch_vel(self,m1,m2):
         vel = Twist()
         vel.linear.x = m1
         vel.linear.y = m2
-        self.pitch_pub(vel)
+        self.pitch_pub.publish(vel)
 
     def publish_height_vel(self,m1,m2):
         vel = Twist()
         vel.linear.x = m1
         vel.linear.y = m2
-        self.height_pub(vel)
+        self.height_pub.publish(vel)
 
-    def height_enc_to_inch(self,enc,start_val):
-        total_length = self.height_max_length - self.height_min_length
-        percent = (enc-start_val)/(2047-start_val)
-        return self.height_min_length + total_length * percent
+    def height_enc_to_inch(self,enc,enc_min):
+        percent = (enc-enc_min)/(self.MAX_ENC-enc_min)
+        return self.height_min_length + self.height_stroke_length * percent
 
-    def height_inch_to_enc(self,inch,start_val)
-        total_length = self.height_max_length - self.height_min_length
-        percent = (inch-self.height_min_length)/(total_length)
-        return start_val + 2047 * percent
+    def height_inch_to_enc(self,inch,enc_min):
+        percent = (inch-self.height_min_length)/(self.height_stroke_length)
+        return enc_min + (self.MAX_ENC-enc_min) * percent
 
-    def pitch_enc_to_inch(self,enc,start_val):
-        total_length = self.pitch_max_length - self.pitch_min_length
-        percent = (enc-start_val)/(2047-start_val)
-        return self.pitch_min_length + total_length * percent
+    def pitch_enc_to_inch(self,enc,enc_min):
+        percent = (enc-enc_min)/(self.MAX_ENC-enc_min)
+        return self.pitch_min_length + self.pitch_stroke_length * percent
 
-    def pitch_inch_to_enc(self,inch,start_val)
-        total_length = self.pitch_max_length - self.pitch_min_length
-        percent = (inch-self.pitch_min_length)/(total_length)
-        return start_val + 2047 * percent
+    def pitch_inch_to_enc(self,inch,enc_min):
+        percent = (inch-self.pitch_min_length)/(self.pitch_stroke_length)
+        return enc_min + (self.MAX_ENC-enc_min) * percent
 
     def height_angle_to_dist(self, theta):
         return math.sqrt(793.5625 - 708*math.cos(math.radians(90)-theta))
