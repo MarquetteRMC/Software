@@ -6,7 +6,7 @@
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
     <param name="use_gui" value="$(arg gui)" />
 
-    <include file="$(find odrive_ros)/launch/odrive.launch" />
+    <!-- <include file="$(find odrive_ros)/launch/odrive.launch" /> -->
     <include file="$(find roboclaw_node)/launch/roboclaw_nodes.launch" />
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
