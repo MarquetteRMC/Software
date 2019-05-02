@@ -13,8 +13,8 @@ def command_listener_callback(data):
 def initialize():
     global curr_state
     curr_state = "inactive"
-    state_pub = rospy.Publisher('execution_state', String, queue_size=10)
-    rospy.init_node('execute_state_publisher')
+    state_pub = rospy.Publisher('overseer_state', String, queue_size=10)
+    rospy.init_node('overseer_node')
     rospy.Subscriber("state_commands", String, command_listener_callback)
     rate = rospy.Rate(5)
     
