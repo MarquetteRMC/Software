@@ -1,19 +1,16 @@
 <launch>
-
-    <arg name="model" defualt="$(dirname)/../myrobot.urdf" />
-    <arg name="gui" defualt="true" />
     
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
-    <param name="use_gui" value="$(arg gui)" />
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robot_config)/urdf/myrobot.urdf" />
+    <param name="use_gui" value="true" />
 
-    <include file="$(find odrive_ros)/launch/odrive.launch" />
-    <include file="$(find roboclaw_node)/launch/roboclaw_nodes.launch" />
+    <!-- <include file="$(find odrive_ros)/launch/odrive.launch" /> -->
+    <!-- <include file="$(find roboclaw_node)/launch/roboclaw_nodes.launch" /> -->
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
 
-    <node pkg="overseer" type="overseer_node.py" name="overseer_node">
-    <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" />
-    <node pkg="current_sensing" type="VoltageInput.py" name="battery_draw" />
+    <!-- <node pkg="overseer" type="overseer_node.py" name="overseer_node"> -->
+    <!-- <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" /> -->
+    <!-- <node pkg="current_sensing" type="VoltageInput.py" name="battery_draw" /> -->
     
 </launch>

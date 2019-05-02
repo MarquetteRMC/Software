@@ -1,7 +1,7 @@
 moveit_setup_assistant_config:
   URDF:
-    package: ""
-    relative_path: /home/zandgren/Software/ros/src/myrobot.urdf
+    package: "robot_config"
+    relative_path: urdf/myrobot.urdf
     xacro_args: ""
   SRDF:
     relative_path: config/visual.srdf
