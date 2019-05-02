@@ -36,10 +36,10 @@ class Node:
         self.pitch_min_length = 11.69
         self.pitch_max_length = 17.6
 
-        self.h1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/30)
-        self.h2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/30)
-        self.p1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/30)
-        self.p2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/30)
+        self.h1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.h2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.p1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.p2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
 
         self.h_params = {"m1":78,"m2":78}
         self.p_params = {"m1":78,"m2":78}
@@ -101,8 +101,6 @@ class Node:
         self.p1_pid.setpoint = pitch_enc_target
         # pitch_enc_target = self.pitch_inch_to_enc(pitch_inch_target,self.p_params['m2'])
         # self.p2_pid.setpoint = pitch_enc_target
-        
-
 
     def publish_arm_state(self):
             arm_msg = JointState()
