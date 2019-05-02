@@ -5,6 +5,7 @@ import rospy
 import tf
 
 from simple_pid import PID
+from scipy import signal
 
 from geometry_msgs.msg import Quaternion, Twist
 from nav_msgs.msg import Odometry
@@ -38,17 +39,26 @@ class Node:
         self.pitch_max_length = 17.6
         self.pitch_stroke_length = self.pitch_max_length - self.pitch_min_length
 
+        self.start = False
+
         self.h1_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
         self.h2_pid = PID(1,1,1,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
-        self.p1_pid = PID(1,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
-        self.p2_pid = PID(0.8,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.p1_pid = PID(5,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
+        self.p2_pid = PID(5,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
 
         self.MAX_ENC = 2047
-        self.pe_div = 6
+        self.pe_div = 12
         self.he_div = 12
 
-        self.h_params = {"m1":0,"m2":0}
-        self.p_params = {"m1":0,"m2":0}
+        self.deadband = 10
+
+        self.h_params = {"m1":50/self.he_div,"m2":50/self.he_div}
+        self.p_params = {"m1":30/self.pe_div,"m2":30/self.pe_div}
+
+        self.p1_vals = [0,0,0,0,0]
+        self.p2_vals = [0,0,0,0,0]
+        self.p1_vals = [0,0,0,0,0]
+        self.p2_vals = [0,0,0,0,0]
 
         self.height_pos = {"m1":0,"m2":0}
         self.pitch_pos = {"m1":0,"m2":0}
@@ -59,22 +69,29 @@ class Node:
         while self.height_pos['m1'] == 0 and self.pitch_pos['m1'] == 0:
             self.rate.sleep()
 
+        rospy.sleep(1)
         rospy.loginfo("got data")
-
+        
         self.h1_pid.set_auto_mode(True,last_output=0.0)
-        #self.h2_pid.set_auto_mode(True,last_output=0.0)
+        self.h2_pid.set_auto_mode(True,last_output=0.0)
         self.p1_pid.set_auto_mode(True,last_output=0.0)
-        #self.p2_pid.set_auto_mode(True,last_output=0.0)
+        self.p2_pid.set_auto_mode(True,last_output=0.0)
 
         while not rospy.is_shutdown():
             
-            h_output = self.h1_pid(self.height_pos['m1'])
-            p_output = self.p1_pid(self.pitch_pos['m1'])
-            #rospy.loginfo("actual pos h %d, p %d", self.height_pos['m1'],self.pitch_pos['m1'])
-            rospy.loginfo("pid output h %d, p %d", h_output,p_output)
+            h_output1 = self.h1_pid(self.height_pos['m1'])
+            h_output2 = self.h2_pid(self.height_pos['m2'])
+            if abs(h_output1) < self.deadband: h_output1 = 0
+            if abs(h_output2) < self.deadband: h_output2 = 0
 
-            self.publish_pitch_vel(-p_output,-p_output)
-            self.publish_height_vel(h_output,h_output)
+            p_output1 = self.p1_pid(self.pitch_pos['m1'])
+            p_output2 = self.p2_pid(self.pitch_pos['m2'])
+            if abs(p_output1) < self.deadband: p_output1 = 0
+            if abs(p_output2) < self.deadband: p_output2 = 0
+            rospy.loginfo("pid output p1 %d, p2 %d", p_output1,p_output2)
+
+            self.publish_pitch_vel(-p_output1,-p_output2)
+            self.publish_height_vel(h_output1,h_output2)
 
             self.publish_arm_state()
             self.rate.sleep()
@@ -83,12 +100,22 @@ class Node:
     def shutdown(self):
         rospy.loginfo("Shutting down joint_controller_node")
 
+    def get_avg(self,lst):
+        return sum(lst) / len(lst)
+
+    def pitch_add_meas(self, p1, p2):
+        self.p1_vals.insert(0,int(p1/self.pe_div))
+        self.p1_vals.pop()
+        self.p2_vals.insert(0,int(p2/self.pe_div))
+        self.p2_vals.pop()
+
     def pitch_pos_callback(self, msg):
         if msg.position[0] < 0.1 or msg.position[0] < 0.1:
             return
-        self.pitch_pos['m1'] = int(msg.position[0]/self.pe_div)
-        self.pitch_pos['m2'] = int(msg.position[1]/self.pe_div)
-        #rospy.loginfo("pitch m1 %d", self.pitch_pos['m1'])
+        self.pitch_add_meas(msg.position[0],msg.position[1])
+        self.pitch_pos['m1'] = self.get_avg(self.p1_vals)
+        self.pitch_pos['m2'] = self.get_avg(self.p2_vals)
+        #rospy.loginfo("pitch m1 %d", self.pitch_pos['m2'])
 
     def height_pos_callback(self, msg):
         if msg.position[0] < 0.1 or msg.position[0] < 0.1:
@@ -102,15 +129,16 @@ class Node:
         height_inch_target = self.height_angle_to_dist(height_angle_target)
         height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m1'])
         self.h1_pid.setpoint = int(height_enc_target/self.he_div)
-        # height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m2'])
+        height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m2'])
+        self.h2_pid.setpoint = int(height_enc_target/self.he_div)
         # self.h2_pid.setpoint = height_enc_target
 
         pitch_angle_target = msg.position[3]
         pitch_inch_target = self.pitch_angle_to_dist(pitch_angle_target)
         pitch_enc_target = self.pitch_inch_to_enc(pitch_inch_target,self.p_params['m1'])
         self.p1_pid.setpoint = int(pitch_enc_target/self.pe_div)
-        # pitch_enc_target = self.pitch_inch_to_enc(pitch_inch_target,self.p_params['m2'])
-        # self.p2_pid.setpoint = pitch_enc_target
+        pitch_enc_target = self.pitch_inch_to_enc(pitch_inch_target,self.p_params['m2'])
+        self.p2_pid.setpoint = int(pitch_enc_target/self.pe_div)
         #rospy.loginfo("setpoint h %d, p %d", height_enc_target , pitch_enc_target)
 
     def publish_arm_state(self):
@@ -118,8 +146,8 @@ class Node:
             arm_msg.header = Header()
             arm_msg.header.stamp = rospy.Time.now()
             arm_msg.name = ['height', 'pitch']
-            height_pos_inch = self.height_enc_to_inch(self.height_pos['m1'],self.h_params['m1'])
-            pitch_pos_inch = self.pitch_enc_to_inch(self.pitch_pos['m1'],self.p_params['m1'])
+            height_pos_inch = self.height_enc_to_inch(self.height_pos['m1']*self.he_div,self.h_params['m1']*self.he_div)
+            pitch_pos_inch = self.pitch_enc_to_inch(self.pitch_pos['m1']*self.pe_div,self.p_params['m1']*self.pe_div)
             height_angle = self.height_dist_to_angle(height_pos_inch)
             pitch_angle = self.pitch_dist_to_angle(pitch_pos_inch)
             arm_msg.position = [height_angle, pitch_angle]
