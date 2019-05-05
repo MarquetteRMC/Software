@@ -1,0 +1,16 @@
+arm_controller:
+  arm:
+    hardware_interface:
+      joints:
+        - base_to_lever_arm
+        - lever_arm_to_digging_arm
+  controller:
+    joint_state_controller:
+      type: joint_state_controller/JointStateController
+      publish_rate: 10
+    arm_position:
+      type: effort_controllers/JointPositionController
+      joints:
+        - base_to_lever_arm
+        - lever_arm_to_digging_arm
+      pid: {p: 1.0, i: 0.0, d: 0.0}

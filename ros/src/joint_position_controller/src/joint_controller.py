@@ -12,7 +12,6 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Header
 
-
 class Node:
 
 
@@ -46,22 +45,22 @@ class Node:
         self.p1_pid = PID(5,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
         self.p2_pid = PID(5,0,0,output_limits=(-127,127),auto_mode=False,sample_time=1/5)
 
-        self.MAX_ENC = 2047
-        self.pe_div = 12
-        self.he_div = 12
+        self.MAX_ENC = 2047.0
+        self.pe_div = 12.0
+        self.he_div = 12.0
 
-        self.deadband = 10
+        self.deadband = 10.0
 
-        self.h_params = {"m1":50,"m2":50}
-        self.p_params = {"m1":30,"m2":30}
+        self.h_params = {"m1":50.0,"m2":50.0}
+        self.p_params = {"m1":50.0,"m2":50.0}
 
-        self.p1_vals = [0,0,0,0,0]
-        self.p2_vals = [0,0,0,0,0]
-        self.h1_vals = [0,0,0,0,0]
-        self.h2_vals = [0,0,0,0,0]
+        self.p1_vals = [0.0,0.0,0.0,0.0,0.0]
+        self.p2_vals = [0.0,0.0,0.0,0.0,0.0]
+        self.h1_vals = [0.0,0.0,0.0,0.0,0.0]
+        self.h2_vals = [0.0,0.0,0.0,0.0,0.0]
 
-        self.height_pos = {"m1":0,"m2":0}
-        self.pitch_pos = {"m1":0,"m2":0}
+        self.height_pos = {"m1":0.0,"m2":0.0}
+        self.pitch_pos = {"m1":0.0,"m2":0.0}
 
     def run(self):
         rospy.loginfo("waiting for data")
@@ -81,13 +80,13 @@ class Node:
             
             h_output1 = self.h1_pid(int(self.height_pos['m1']/self.he_div))
             h_output2 = self.h2_pid(int(self.height_pos['m2']/self.he_div))
-            if abs(h_output1) < self.deadband: h_output1 = 0
-            if abs(h_output2) < self.deadband: h_output2 = 0
+            if abs(h_output1) < self.deadband: h_output1 = 0.0
+            if abs(h_output2) < self.deadband: h_output2 = 0.0
 
             p_output1 = self.p1_pid(int(self.pitch_pos['m1']/self.pe_div))
             p_output2 = self.p2_pid(int(self.pitch_pos['m2']/self.pe_div))
-            if abs(p_output1) < self.deadband: p_output1 = 0
-            if abs(p_output2) < self.deadband: p_output2 = 0
+            if abs(p_output1) < self.deadband: p_output1 = 0.0
+            if abs(p_output2) < self.deadband: p_output2 = 0.0
             rospy.loginfo("pid output h1 %d, h2 %d", h_output1,h_output2)
 
             self.publish_pitch_vel(-p_output1,-p_output2)
@@ -133,7 +132,7 @@ class Node:
     
     def joint_states_callback(self,msg):
         height_angle_target = msg.position[2]
-        height_inch_target = self.height_angle_to_dist(height_angle_target-math.radians(189.5))
+        height_inch_target = self.height_angle_to_dist(math.radians(369.69)-height_angle_target)
         height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m1'])
         self.h1_pid.setpoint = int(height_enc_target/self.he_div)
         height_enc_target = self.height_inch_to_enc(height_inch_target,self.h_params['m2'])
@@ -152,10 +151,10 @@ class Node:
             arm_msg = JointState()
             arm_msg.header = Header()
             arm_msg.header.stamp = rospy.Time.now()
-            arm_msg.name = ['height', 'pitch']
+            arm_msg.name = ['base_to_lever_arm', 'lever_arm_to_digging_arm']
             height_pos_inch = self.height_enc_to_inch(self.height_pos['m1'],self.h_params['m1'])
             pitch_pos_inch = self.pitch_enc_to_inch(self.pitch_pos['m1'],self.p_params['m1'])
-            height_angle = self.height_dist_to_angle(height_pos_inch)
+            height_angle = math.radians(369.69) - self.height_dist_to_angle(height_pos_inch)
             pitch_angle = self.pitch_dist_to_angle(pitch_pos_inch)
             arm_msg.position = [height_angle, pitch_angle]
             self.joint_pub.publish(arm_msg)
@@ -173,19 +172,19 @@ class Node:
         self.height_pub.publish(vel)
 
     def height_enc_to_inch(self,enc,enc_min):
-        percent = (enc-enc_min)/(self.MAX_ENC-enc_min)
+        percent = float(enc-enc_min)/float(self.MAX_ENC-enc_min)
         return self.height_min_length + self.height_stroke_length * percent
 
     def height_inch_to_enc(self,inch,enc_min):
-        percent = (inch-self.height_min_length)/(self.height_stroke_length)
-        return enc_min + (self.MAX_ENC-enc_min) * percent
+        percent = float(inch-self.height_min_length)/float(self.height_stroke_length)
+        return float(enc_min) + float(self.MAX_ENC-enc_min) * percent
 
     def pitch_enc_to_inch(self,enc,enc_min):
-        percent = (enc-enc_min)/(self.MAX_ENC-enc_min)
+        percent = float(enc-enc_min)/float(self.MAX_ENC-enc_min)
         return self.pitch_min_length + self.pitch_stroke_length * percent
 
     def pitch_inch_to_enc(self,inch,enc_min):
-        percent = (inch-self.pitch_min_length)/(self.pitch_stroke_length)
+        percent = float(inch-self.pitch_min_length)/float(self.pitch_stroke_length)
         return enc_min + (self.MAX_ENC-enc_min) * percent
 
     def height_angle_to_dist(self, theta):
@@ -200,8 +199,16 @@ class Node:
     def pitch_dist_to_angle(self, pos):
         return math.asin(0.05557*pos*math.sin(math.acos((pos*pos - 202.828125)/(22*pos*pos))))+math.radians(32.807)
 
-
-
+#self.height_min_length = 15.71
+#self.height_max_length = 25.55
+#self.pitch_min_length = 11.69
+#self.pitch_max_length = 17.6
+#node = Node()
+#print("some tests: ")
+#print(node.pitch_angle_to_dist(1.20))
+#print(node.pitch_inch_to_enc(node.pitch_angle_to_dist(1.20),50))
+#print(node.pitch_angle_to_dist(2.0))
+#print(node.pitch_inch_to_enc(node.pitch_angle_to_dist(2.0),50))
 
 if __name__ == "__main__":
     try:

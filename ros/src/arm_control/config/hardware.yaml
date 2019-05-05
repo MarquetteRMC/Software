@@ -1,0 +1,7 @@
+robot_hardware:
+  - arm_hw
+arm_hw:
+  type: arm_hardware_interface/Arm_interface
+  joints:
+    - base_to_lever_arm
+    - lever_arm_to_digging_arm
