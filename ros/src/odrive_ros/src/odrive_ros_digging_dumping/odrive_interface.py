@@ -242,5 +242,5 @@ class ODriveInterfaceAPI(object):
         print("left_motor_val " + str(left_motor_val))
         print("right_motor_val " + str(right_motor_val))
         self.left_axis.controller.vel_setpoint = left_motor_val
-        self.right_axis.controller.vel_setpoint = -right_motor_val
+        self.right_axis.controller.vel_setpoint = right_motor_val
 

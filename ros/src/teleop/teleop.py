@@ -194,17 +194,16 @@ class SimpleKeyTeleop():
         curses.KEY_DOWN:  (-325,  0),
         curses.KEY_LEFT:  ( 0,  -325),
         curses.KEY_RIGHT: ( 0, 325),
-        #height linear actuators
-        curses.KEY_PPAGE: (10,0),
-        curses.KEY_NPAGE: (-10,0),
-        #pitch linear actuators
-        curses.KEY_DC: (-15,0),
-        curses.KEY_IC: (15,0),
         #Digging Motors
-        curses.KEY_END: (-50,0),
-        curses.KEY_HOME: (50,0),
+        ord('t'): (-50,0),
+        ord('g'): (50,0),
         #Dumping Motors
-        curses.KEY_BACKSPACE: (-60,0),
+        ord('r'): (-100,0),
+	ord('f'): (100,0),
+
+	#Toggle Digging On or Off
+	ord('a'): (1,0),
+	#curses.key-f m: (-1,0), 
     }
 
     def run(self):

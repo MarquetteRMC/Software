@@ -1,5 +1,5 @@
-<!-- -*- mode: XML -*- -->
+
 <launch>
-    <node pkg="odrive_node" type="odrive_node_digging.py" name="odrive_digging_dumping" />
-    <node pkg="odrive_node" type="odrive_node_locomotion.py" name="odrive_locomotion" />
+    <node pkg="odrive_ros" type="odrive_node_digging.py" name="odrive_digging_dumping" />
+    <node pkg="odrive_ros" type="odrive_node_locomotion.py" name="odrive_locomotion" />
 </launch>

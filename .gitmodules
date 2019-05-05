@@ -4,9 +4,6 @@
 [submodule "ros/src/vision_opencv"]
 	path = ros/src/vision_opencv
 	url = https://github.com/MarquetteRMC/vision_opencv.git
-[submodule "ros/src/rtabmap_ros"]
-	path = ros/src/rtabmap_ros
-	url = https://github.com/MarquetteRMC/rtabmap_ros.git
 [submodule "ros/src/zbar_ros"]
 	path = ros/src/zbar_ros
 	url = https://github.com/MarquetteRMC/zbar_ros.git

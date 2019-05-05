@@ -283,9 +283,11 @@ class ODriveNode(object):
         
         
         'If dumping trigger the dumping flag'
-        if (linear_x == -60.0):
+        if (linear_x == -100.0):
             #linear_x = -300.0
             Dumping = True
+	if(linear_x == 100.0):
+	    Dumping = True
              
         'If digging trigger the digging flag'
         if (linear_x == 50.0):
@@ -314,12 +316,12 @@ class ODriveNode(object):
         left_linear_val, right_linear_val = self.convert(linear_x,z)
         
         if (Dumping == True):
-            right_linear_val = 0
+            left_linear_val = 0
         
         if (Digging_Forward == True):
-            left_linear_val = 0
+            right_linear_val = 0
 	if (Digging_Backwards == True):
-	    left_linear_val = 0
+	    right_linear_val = 0
 
         # if wheel speed = 0, stop publishing after sending 0 once. #TODO add error term, work out why VESC turns on for 0 rpm
         if self.last_speed < 0+0.001 and abs(left_linear_val) < 0+0.001 and abs(right_linear_val) < 0+0.001:

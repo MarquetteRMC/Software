@@ -10,7 +10,7 @@ from Phidget22.Devices.CurrentInput import *
 from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
-from std_msgs.msg import String
+from std_msgs.msg import Float64
 from playsound import playsound
 
 global current_value
@@ -72,7 +72,7 @@ class CurrentReader():
     
             """
             * Set the CurrentChangeTrigger inside of the attach handler to initialize the device with this value.
-            * CurrentChangeTrigger will affect the frequency of CurrentChange events, by limiting them to only occur when
+a           * CurrentChangeTrigger will affect the frequency of CurrentChange events, by limiting them to only occur when
             * the current changes by at least the value set.
             """
             print("\tSetting Current ChangeTrigger to 0.0")
@@ -166,8 +166,8 @@ class CurrentReader():
     * @return 0 if the program exits successfully, 1 if it exits with errors.
     """
     def __init__(self):
-    	self.current_publisher = rospy.Publisher('CurrentSensor/battery_current_draw', String, queue_size=10)
-    	self._hz = rospy.get_param('~hz' , 10)
+    	self.current_publisher = rospy.Publisher('CurrentSensor/battery_current_draw', Float64, queue_size=10)
+    	self._hz = rospy.get_param('~hz' , 50)
     	try:
             """
             * Allocate a new Phidget Channel object
@@ -176,7 +176,7 @@ class CurrentReader():
             
             channelInfo = ChannelInfo()
             channelInfo.deviceSerialNumber = 539331
-            channelInfo.hubPort = 0
+            channelInfo.hubPort = 2
             channelInfo.isHubPortDevice = 0
             channelInfo.channel = 0
 	
@@ -224,7 +224,7 @@ class CurrentReader():
     
     def _publish(self):            
         while True:
-            self.current_publisher.publish(str(current_value[0]))
+            self.current_publisher.publish(float(current_value[0])*-1)
             if current_value[0] > 15 : playsound('/home/mars/Downloads/torture.wav')  #15 amps 
             time.sleep(0.1)   
     
