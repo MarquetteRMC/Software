@@ -1,0 +1,7 @@
+<library path="lib/libarm_hardware_interface">
+    <class name="arm_hardware_interface/Arm_interface" type="arm_hardware_interface::Arm_interface" base_class_type="hardware_interface::RobotHW"/>
+        <description>
+            Interface for arm
+        </description>
+    <class/>
+</library>

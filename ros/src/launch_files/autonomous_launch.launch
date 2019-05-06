@@ -5,17 +5,13 @@
     <rosparam file="$(find arm_control)/config/controllers.yaml" command="load" />
     <rosparam file="$(find arm_control)/config/hardware.yaml" command="load" />
 
-    <include file="$(find odrive_ros)/launch/odrive.launch" />
-    <include file="$(find roboclaw_node)/launch/roboclaw_nodes.launch" />
+    <node name="arm_control_node" pkg="arm_control" type="arm_control_node" output="screen" />
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" 
+        output="screen" ns="/" args="/arm_control/controller/joint_state_controller"/>
 
-    <node name ="controller_spawner" pkg="controller_manager" type"spawner" respawn="false" 
-        output="screen" ns="/arm_controller" args="arm_state joint_state_controller">
-        
-   <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />-->
+   <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /> /arm_control/controller/arm_position-->
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" 
         respawn="false" output="screen" />
     <!-- <node pkg="overseer" type="overseer_node.py" name="overseer_node"> -->
-    <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" />
-    <!-- <node pkg="current_sensing" type="VoltageInput.py" name="battery_draw" /> -->
-    
+
 </launch>

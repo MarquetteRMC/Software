@@ -1,4 +1,4 @@
-arm_controller:
+arm_control:
   arm:
     hardware_interface:
       joints:
