@@ -1,29 +1,22 @@
 #include <ros/ros.h>
 #include <hardware_interface/joint_command_interface.h>
 #include <pluginlib/class_list_macros.h>
+#include <iostream>
+#include <ros/console.h>
 
-namespace arm_controller
+namespace arm_control
 {
 
-    class ArmPositionController : public controller_interface::Controller<hardware_interface::PositionJointInterface>
+    class ArmPositionController : public controller_interface::Controller<hardware_interface::EffortJointInterface>
     {
         public:
-            bool init(hardware_interface::PositionJointInterface* hw, ros::NodeHandle &n)
+            bool init(hardware_interface::EffortJointInterface* hw, ros::NodeHandle &n)
             {
-                std::string height_joint;
-                if (!n.getParam("base_to_lever_arm", height_joint)) {
-                    ROS_ERROR("could not find height_joint");
-                    return false;
-                }
-
-                std::string pitch_joint;
-                if (!n.getParam("lever_arm_to_digging_arm", pitch_joint)) {
-                    ROS_ERROR("could not find pitch_joint");
-                    return false;
-                }
-
-                h_joint_hw = hw->getHandle(height_joint);
-                p_joint_hw = hw->getHandle(pitch_joint);
+                std::vector<std::string> joints;
+                n.getParam("joints", joints)) {
+                ROS_DEBUG_STREAM(joints[0])
+                h_joint_hw = hw->getHandle(joints[0]);
+                p_joint_hw = hw->getHandle(joint[1]);
                 return true;
             }
 
@@ -40,5 +33,5 @@ namespace arm_controller
                 hardware_interface::JointHandle h_joint_hw;
                 hardware_interface::JointHandle p_joint_hw;
     };
-    PLUGINLIB_DECLARE_CLASS(arm_control, PositionController, arm_controller::PositionController, controller_interface::ControllerBase)
 }
+PLUGINLIB_DECLARE_CLASS(arm_control, PositionController, arm_controller::PositionController, controller_interface::ControllerBase)
