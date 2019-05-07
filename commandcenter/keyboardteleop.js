@@ -27,20 +27,27 @@ KEYBOARDTELEOP.Teleop = function(options) {
   options = options || {};
   var ros = options.ros;
   var topic = options.topic || '/cmd_vel';
-  // permanent throttle
   var throttle = options.throttle || 1.0;
 
   // used to externally throttle the speed (e.g., from a slider)
   this.scale = 1.0;
+  this.d_scale = 1.0;
 
   // linear x and y movement and angular z movement
   var x = 0;
   var y = 0;
   var z = 0;
+  var d_x = 0;
+  var d_y = 0;
 
   var cmdVel = new ROSLIB.Topic({
     ros : ros,
-    name : topic,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+  var digVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/digging/cmd_vel',
     messageType : 'geometry_msgs/Twist'
   });
 
@@ -50,47 +57,69 @@ KEYBOARDTELEOP.Teleop = function(options) {
     var oldX = x;
     var oldY = y;
     var oldZ = z;
+    var olddX = d_x;
+    var olddY = d_y;
     
-    var pub = true;
+    var l_pub = false;
+    var d_pub = false;
 
     var speed = 0;
+    var d_speed = 0;
     // throttle the speed by the slider and throttle constant
     if (keyDown === true) {
       speed = throttle * that.scale;
+      d_speed = throttle * that.d_scale;
     }
     // check which key was pressed
     switch (keyCode) {
       case 65:
         // turn left
-        z = 1 * speed;
+        z = -0.5 * speed;
+        l_pub = true;
         break;
       case 87:
         // up
-        x = 0.5 * speed;
+        x = 1 * speed;
+        l_pub = true;
         break;
       case 68:
         // turn right
-        z = -1 * speed;
+        z = 0.5 * speed;
+        l_pub = true;
         break;
       case 83:
         // down
-        x = -0.5 * speed;
+        x = -1 * speed;
+        l_pub = true;
         break;
-      case 69:
-        // strafe right
-        y = -0.5 * speed;
+      case 73:
+        // I dig
+        d_x = -1 * d_speed;
+        d_pub = true;
         break;
-      case 81:
-        // strafe left
-        y = 0.5 * speed;
+      case 75:
+        // k dig backwards "kick"
+        d_x = 1 * d_speed;
+        d_pub = true;
+        break;
+      case 80:
+        // p dump
+        d_y = -1 * d_speed;
+        d_pub = true;
+        break;
+      case 59:
+        // ; dump backwards
+        d_y = 1 * d_speed;
+        d_pub = true;
         break;
       default:
-        pub = false;
+        l_pub = false;
+        d_pub = false;
     }
 
     // publish the command
-    if (pub === true) {
-      var twist = new ROSLIB.Message({
+    if (l_pub === true) {
+      var l_twist = new ROSLIB.Message({
         angular : {
           x : 0,
           y : 0,
@@ -102,11 +131,29 @@ KEYBOARDTELEOP.Teleop = function(options) {
           z : z
         }
       });
-      cmdVel.publish(twist);
-
+      cmdVel.publish(l_twist);
       // check for changes
       if (oldX !== x || oldY !== y || oldZ !== z) {
-        that.emit('change', twist);
+        that.emit('change', l_twist);
+      }
+    }
+    if (d_pub === true) {
+      var d_twist = new ROSLIB.Message({
+        angular : {
+          x : 0,
+          y : 0,
+          z : 0
+        },
+        linear : {
+          x : d_x,
+          y : d_y,
+          z : 0
+        }
+      });
+      digVel.publish(d_twist);
+      // check for changes
+      if (olddX !== x || olddY !== y) {
+        that.emit('change', d_twist);
       }
     }
   };

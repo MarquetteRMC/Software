@@ -3,7 +3,6 @@
     <include file="$(find odrive_ros)/launch/odrive.launch" />
     <include file="$(find roboclaw_node)/launch/roboclaw_nodes.launch" />
     <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" />
-    <!-- <node pkg="current_sensing" type="VoltageInput.py" name="battery_draw" /> -->
-    
+    <node pkg="current_sensing" type="VoltageInput.py" name="battery_voltage" />
 
 </launch>
