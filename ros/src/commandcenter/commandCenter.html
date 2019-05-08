@@ -1,0 +1,341 @@
+<!-- webfsd -F -p 8000 -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="./bootstrap.min.css"/>
+	<link rel="stylesheet" href="./jquery-ui.css" />
+
+    <!--
+    <script src="./jquery.min.js"></script>
+    <script type="text/javascript" src="./code/highcharts.js"></script>
+	<script type="text/javascript" src="./code/modules/series-label.js"></script>
+	<script type="text/javascript" src="./code/modules/exporting.js"></script>
+	<script type="text/javascript" src="./code/modules/export-data.js"></script>
+    -->
+    
+    
+	<script type="text/javascript" src="./jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="./jquery-ui.min.js"></script>
+	<script type="text/javascript" src="./popper.min.js"></script>
+	<script type="text/javascript" src="./bootstrap.min.js"></script>
+
+	<script type="text/javascript" src="./eventemitter2.min.js"></script>
+	<script type="text/javascript" src="./roslib.js"></script>
+	<script type="text/javascript" src="./keyboardteleop.js"></script>
+	
+</head>
+<body onload='init()'>
+	<div id="statusIndicator">
+		<h1 id="connecting">
+			Connecting to rosbridge...
+		</h1>
+		<h1 id="connected" style="color:#00D600; display:none">
+			Connected
+		</h1>
+		<h3 id="error" style="color:#FF0000; display:noner">
+			Error in the backend!
+			</br>make sure to run: roslaunch rosbridge_server rosbridge_websocket.launch
+		</h3>
+		<h3 id="closed" style="display:none">
+			Connection closed.
+			</br>make sure to run: roslaunch rosbridge_server rosbridge_websocket.launch
+		</h3>
+	</div>
+	<hr>
+
+	<div class="card" style="width: 15rem;" id="actuators">
+		<div class="card-body">
+			<h5 class="card-title">/cmd_vel</h5>
+			<p class="card-text" id="linearx">Robot X: 0</p>
+			<p class="card-text" id="angularz">Robot Z: 0</p>
+			<h5 class="card-title">/dig/cmd_vel</h5>
+			<button id="digging-toggle" style="background-color:lightgreen">Start Digging</button>
+			<p class="card-text" id="dig">dig: 0</p>
+			<p class="card-text" id="dump">dump: 0</p>
+			<h5 class="card-title">/battery_voltage</h5>
+			<p class="card-text" id="voltage">Voltage: 0</p>
+		</div>
+	</div>
+	
+	<div class="card" style="width: 15rem;" id="controls">
+	    <div class="card-body">
+	        <div id="drive-speed-label"></div>
+	        <div id="drive-speed-slider"></div>
+	        <div id="dig-speed-label"></div>
+	        <div id="dig-speed-slider"></div>
+	        <div id="dump-speed-label"></div>
+	        <div id="dump-speed-slider"></div>
+	    </div>
+    </div>
+	
+	<div class="card" style="width: 15rem;" id="arm-sliders">
+		<div class="card-body">
+			<div id="height-label"></div>
+	        <div id="height-slider"></div>
+	        <div id="pitch-label"></div>
+	        <div id="pitch-slider"></div>
+		</div>
+	</div>
+	
+	<!--
+	<div class="card" style="width: 15rem;" id="currents">
+		<div class="card-body">
+			<h5 class="card-title">/cmd_vel</h5>
+			<p class="card-text" id="linearx">Robot X: 0</p>
+			<p class="card-text" id="angularz">Robot Z: 0</p>
+		</div>
+	</div>
+	<div class="card" style="width: 15rem;" id="linear_actuators">
+		<div class="card-body">
+			<h5 class="card-title">/cmd_vel</h5>
+			<p class="card-text" id="linearx">Robot X: 0</p>
+			<p class="card-text" id="angularz">Robot Z: 0</p>
+		</div>
+	</div>
+	<div class="card" style="width: 15rem;" id="control_group">
+		<div class="card-body">
+			<h5 class="card-title">/cmd_vel</h5>
+			<p class="card-text" id="linearx">Robot X: 0</p>
+			<p class="card-text" id="angularz">Robot Z: 0</p>
+		</div>
+	</div>
+	
+
+	<div class="card" style="width: 30rem; height: 30rem;>
+		<div class="card-body">
+			<div id="cmd_vel_plot"></div>
+		</div>
+	</div>
+	-->
+</body>
+
+<footer>
+
+<script type="text/javascript">
+	
+	var ros = new ROSLIB.Ros({
+	    url: 'ws://192.168.1.132:9090'
+    });
+    
+    var teleop = new KEYBOARDTELEOP.Teleop({
+      		ros : ros,
+      		throttle: 88
+	});
+    
+    var x_vel = [];
+    var z_vel = [];
+    var diggingEnabled = false;
+    var heightAngle = 5.57;
+    var pitchAngle = 1.20;
+    
+    var jointAnglePub = new ROSLIB.Topic({
+        ros : ros,
+        name : '/joints/arm_joints',
+        messageType : 'sensor_msgs/JointState'
+      });
+    var jointStateSeq = 0;
+    function publishJointAngle(h,p) {
+      console.log(h);
+      jointStateSeq++;
+      var jointState = new ROSLIB.Message({
+        header: {
+          seq: jointStateSeq,
+          frame_id: ''
+        },
+        name: ['base_to_lever_arm'],
+        position : [h]
+      });
+      jointAnglePub.publish(jointState);
+      jointStateSeq++;
+      var jointState = new ROSLIB.Message({
+        header: {
+          seq: jointStateSeq,
+          frame_id: ''
+        },
+        name: ['lever_arm_to_digging_arm'],
+        position : [p]
+      });
+      jointAnglePub.publish(jointState);
+    }
+    
+    var loc_sub = new ROSLIB.Topic({
+	    ros: ros,
+	    name: '/cmd_vel',
+	    messageType: 'geometry_msgs/Twist'
+    });
+    loc_sub.subscribe(function (message) {
+	    document.getElementById('linearx').innerHTML = 'Robot X: ' + message.linear.x;
+	    document.getElementById('angularz').innerHTML = 'Robot Z: ' + message.angular.z;
+	    x_vel.push(message.linear.x);
+	    z_vel.push(message.linear.z);
+    });
+    
+    var dig_sub = new ROSLIB.Topic({
+	    ros: ros,
+	    name: '/digging/cmd_vel',
+	    messageType: 'geometry_msgs/Twist'
+    });
+    dig_sub.subscribe(function (message) {
+	    document.getElementById('dig').innerHTML = 'dig: ' + message.linear.x;
+	    document.getElementById('dump').innerHTML = 'dump: ' + message.linear.y;
+    });
+    
+    var volt_sub = new ROSLIB.Topic({
+	    ros: ros,
+	    name: '/CurrentSensor/battery_voltage_draw',
+	    messageType: 'std_msgs/Float64'
+    });
+    volt_sub.subscribe(function (message) {
+	    document.getElementById('voltage').innerHTML = 'Voltage: ' + message;
+    });
+	
+	    // If there is an error on the backend, an 'error' emit will be emitted.
+    ros.on('error', function (error) {
+	    console.log('error');
+	    document.getElementById('connecting').style.display = 'none';
+	    document.getElementById('connected').style.display = 'none';
+	    document.getElementById('closed').style.display = 'none';
+	    document.getElementById('error').style.display = 'inline';
+	    console.log(error);
+    });
+    // Find out exactly when we made a connection.
+    ros.on('connection', function () {
+	    console.log('Connection made!');
+	    document.getElementById('connecting').style.display = 'none';
+	    document.getElementById('error').style.display = 'none';
+	    document.getElementById('closed').style.display = 'none';
+	    document.getElementById('connected').style.display = 'inline';
+    });
+
+    ros.on('close', function () {
+	    console.log('Connection closed.');
+	    document.getElementById('connecting').style.display = 'none';
+	    document.getElementById('connected').style.display = 'none';
+	    document.getElementById('closed').style.display = 'inline';
+    });
+    
+	function init() {
+        //drive speed slider
+        $('#drive-speed-slider').slider({
+          range : 'min',
+          min : 0.0,
+          max : 176.0,
+          value : 88,
+          slide : function(event, ui) {
+            $('#drive-speed-label').html('Speed: ' + Math.trunc(ui.value / 0.88) + '%');
+            teleop.drive_scale = (ui.value / 88);
+          }
+        });
+        $('#drive-speed-label').html('drive Speed: ' + (Math.trunc($('#drive-speed-slider').slider('value')) / 0.88) + '%');
+        teleop.drive_scale = ($('#drive-speed-slider').slider('value') / 88);
+        
+        //dig speed slider
+        $('#dig-speed-slider').slider({
+          range : 'min',
+          min : 0.0,
+          max : 176.0,
+          value : 44,
+          slide : function(event, ui) {
+            $('#dig-speed-label').html('dig Speed: ' + Math.trunc(ui.value / 0.88) + '%');
+            teleop.dig_scale = (ui.value / 88);
+          }
+        });
+        $('#dig-speed-label').html('dig Speed: ' + (Math.trunc($('#dig-speed-slider').slider('value')) / 0.88) + '%');
+        teleop.dig_scale = ($('#dig-speed-slider').slider('value') / 88);
+        
+        //dump speed slider
+        $("#dump-speed-slider").slider({
+          range : 'min',
+          min : 0.0,
+          max : 176.0,
+          value : 88,
+          slide : function(event, ui) {
+            $('#dump-speed-label').html('dump Speed: ' + Math.trunc(ui.value / 0.88) + '%');
+            teleop.dump_scale = (ui.value / 88);
+          }
+        });
+        $('#dump-speed-label').html('dump Speed: ' + (Math.trunc($('#dump-speed-slider').slider('value')) / 0.88) + '%');
+        teleop.dump_scale = ($('#dump-speed-slider').slider('value') / 88);
+        
+        //height angle slider
+        $("#height-slider").slider({
+          range : 'min',
+          min : 557,
+          max : 618,
+          value : 557,
+          slide : function(event, ui) {
+            $('#height-label').html('heightAngle: ' + ui.value/100);
+            heightAngle = ui.value/100;
+            publishJointAngle(heightAngle,pitchAngle);
+          }
+        });
+        $('#height-label').html('heightAngle: ' + $('#height-slider').slider('value')/100);
+        
+        //initialize
+        publishJointAngle(heightAngle,pitchAngle);
+        //pitch angle slider
+        $("#pitch-slider").slider({
+          range : 'min',
+          min : 120,
+          max : 200,
+          value : 120,
+          slide : function(event, ui) {
+            $('#pitch-label').html('pitchAngle: ' + ui.value/100);
+            pitchAngle = ui.value/100;
+            publishJointAngle(heightAngle,pitchAngle);
+          }
+        });
+        $('#pitch-label').html('pitchAngle: ' + $('#pitch-slider').slider('value')/100);
+        
+        //digging toggle
+        $("#digging-toggle").click(function() {
+            if(diggingEnabled) {
+                $("#digging-toggle").html("Start Digging");
+                $("#digging-toggle").css('background-color','lightgreen');
+                diggingEnabled = false;
+                teleop.digging = false;
+            } else {
+                $("#digging-toggle").html("Stop Digging");
+                $("#digging-toggle").css('background-color','pink');
+                diggingEnabled = true;
+                teleop.digging = true;
+            }
+            
+        });
+    }
+	
+	/**
+	window.setInterval(function(){
+	    cmd_vel_plot.series[0].update({ data: x_vel});
+		cmd_vel_plot.series[1].update({ data: z_vel});
+	},1000);
+
+    
+	var cmd_vel_plot = Highcharts.chart("cmd_vel_plot", {
+
+		chart: {
+			type: 'line'
+		},
+		title: {
+			text: 'cmd_vel'
+		},
+		series: [{
+			name: 'x',
+			data: x_vel
+		}, {
+			name: 'z',
+			data: z_vel
+		}]
+	});
+	*/
+
+</script>
+
+</footer>
+
+</html>

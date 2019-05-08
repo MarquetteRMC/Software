@@ -1,21 +1,35 @@
 <launch>
 
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robot_config)/urdf/myrobot.urdf" />
-    <param name="use_gui" value="true" />
+    <param name="use_gui" value="false" />
     
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    
+    
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+        <rosparam param="source_list"> ["joints/arm_joints"] </rosparam>
+        <rosparam>
+            zeros:
+                base_to_lever_arm: 5.57
+                lever_arm_to_digging_arm: 1.20
+        </rosparam>
+                
+    </node>
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
     
-    <!-- 
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+    <node name="commandcenter" type="launch_commandcenter.sh" pkg="commandcenter" />
     
+    
+    
+    
+    
+    <!-- 
+    <include file="$(find launch_files)/drivers.launch" />
     <include file="$(find launch_files)/drivers.launch" />
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
-    <include file="$(find openni_launch)/launch/openni.launch" /> depth_registration="true" /> -->
-    <!--<include file="ARUCO TODO" /> 
-    
+    <include file="$(find openni_launch)/launch/openni.launch" /> depth_registration="true" />
+    <param name="zeros" value={base_to_lever_arm: }/>
     -->
-    
-   <!--<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />-->
     
 
 </launch>

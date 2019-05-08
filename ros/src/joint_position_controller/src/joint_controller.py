@@ -49,7 +49,7 @@ class Node:
         self.MAX_ENC = 2047.0
         self.quantize_div = 12.0
 
-        self.deadband = 10.0
+        self.deadband = 11.0
 
         self.h_params = {"m1":50.0,"m2":50.0}
         self.p_params = {"m1":50.0,"m2":50.0}

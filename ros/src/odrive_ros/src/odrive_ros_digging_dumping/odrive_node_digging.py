@@ -73,7 +73,7 @@ class ODriveNode(object):
         self.engage_on_startup    = rospy.get_param('~engage_on_startup', True)
         self.has_preroll     = rospy.get_param('~use_preroll', False)
         
-        self.max_speed   = rospy.get_param('~max_speed', 88)
+        self.max_speed   = rospy.get_param('~max_speed', 176)
         self.max_angular = rospy.get_param('~max_angular', 270)
         
         rospy.on_shutdown(self.terminate)
