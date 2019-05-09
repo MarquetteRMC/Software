@@ -50,9 +50,12 @@ class SensorReader():
             print("\n\tSetting DataInterval to 1000ms")
             ph.setDataInterval(1000)
 
-            print("\tSetting Voltage ChangeTrigger to 0.0")
-            ph.setVoltageChangeTrigger(0.0)
-
+	    if (hubPort == 1):
+                print("\tSetting Voltage ChangeTrigger to 0.0")
+                ph.setVoltageChangeTrigger(0.0)
+	    else:
+                print("\tSetting Current ChangeTrigger to 0.0")
+                ph.setCurrentChangeTrigger(0.0)
             if(ph.getChannelSubclass() == ChannelSubclass.PHIDCHSUBCLASS_VOLTAGEINPUT_SENSOR_PORT):
                 print("\tSetting Voltage SensorType")
                 ph.setSensorType(VoltageSensorType.SENSOR_TYPE_VOLTAGE)
