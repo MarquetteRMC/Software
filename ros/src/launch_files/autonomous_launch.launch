@@ -9,7 +9,7 @@
         <rosparam param="source_list"> ["joints/arm_joints"] </rosparam>
         <rosparam>
             zeros:
-                base_to_lever_arm: 5.57
+                base_to_lever_arm: 5.65
                 lever_arm_to_digging_arm: 1.20
         </rosparam>
                 
@@ -20,6 +20,7 @@
     <node name="commandcenter" type="launch_commandcenter.sh" pkg="commandcenter" />
     
     
+    <include file="$(find openni_launch)/launch/openni.launch" /> depth_registration="true" />
     
     
     
@@ -27,7 +28,6 @@
     <include file="$(find launch_files)/drivers.launch" />
     <include file="$(find launch_files)/drivers.launch" />
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
-    <include file="$(find openni_launch)/launch/openni.launch" /> depth_registration="true" />
     <param name="zeros" value={base_to_lever_arm: }/>
     -->
     

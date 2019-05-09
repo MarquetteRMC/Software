@@ -2,11 +2,9 @@
 
     <include file="$(find odrive_ros)/launch/odrive.launch" />
     <include file="$(find roboclaw_node)/launch/roboclaw_nodes.launch" />
-    <node pkg="current_sensing" type="30A_current_sensor.py" name="current_sensing" />
     
-    <!--
-    <node pkg="current_sensing" type="voltage_input.py" name="battery_voltage" />
-    -->
+    <node pkg="current_sensing" type="phidgets_sensors.py" name="phidgets_sensors" />
+
     <node pkg="joint_position_controller" type="joint_controller.py" name="joint_controller_node" />
 
 

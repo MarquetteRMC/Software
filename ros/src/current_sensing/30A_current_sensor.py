@@ -179,25 +179,12 @@ a           * CurrentChangeTrigger will affect the frequency of CurrentChange ev
             channelInfo.hubPort = 2
             channelInfo.isHubPortDevice = 0
             channelInfo.channel = 0
-	
+	    
             ch.setDeviceSerialNumber(channelInfo.deviceSerialNumber)
             ch.setHubPort(channelInfo.hubPort)
             ch.setIsHubPortDevice(channelInfo.isHubPortDevice)
             ch.setChannel(channelInfo.channel)  
-            
-            
-            if(channelInfo.netInfo.isRemote):
-                ch.setIsRemote(channelInfo.netInfo.isRemote)
-                if(channelInfo.netInfo.serverDiscovery):
-                    try:
-                        Net.enableServerDiscovery(PhidgetServerType.PHIDGETSERVER_DEVICEREMOTE)
-                    except PhidgetException as e:
-                        PrintEnableServerDiscoveryErrorMessage(e)
-                        raise EndProgramSignal("Program Terminated: EnableServerDiscovery Failed")
-                else:
-                    Net.addServer("Server", channelInfo.netInfo.hostname,
-                        channelInfo.netInfo.port, channelInfo.netInfo.password, 0)
-            
+             
             ch.setOnAttachHandler(onAttachHandler)
             ch.setOnDetachHandler(onDetachHandler)
             ch.setOnErrorHandler(onErrorHandler)

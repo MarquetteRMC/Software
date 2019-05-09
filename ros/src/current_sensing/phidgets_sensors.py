@@ -20,7 +20,7 @@ voltage_value = [0]
 try:
     from PhidgetHelperFunctions import *
 except ImportError:
-    sys.stderr.write("\nCould not find PhidgetHelperFunctions. Either add Phdie$
+    sys.stderr.write("\nCould not find PhidgetHelperFunctions. "
                       "or remove the import from your project.")
     sys.stderr.write("\nPress ENTER to end program.")
     readin = sys.stdin.readline()
@@ -40,10 +40,10 @@ class SensorReader():
             channel = ph.getChannel()
             if(ph.getDeviceClass() == DeviceClass.PHIDCLASS_VINT):
                 hubPort = ph.getHubPort()
-                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(s$
+                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
                     "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
             else:
-                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(s$
+                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
                         "\n\t-> Channel:  " + str(channel) + "\n")
 
 
@@ -76,11 +76,11 @@ class SensorReader():
 
             deviceClass = ph.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
-                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(seria$
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel:  " + str(channel) + "\n")
             else:            
                 hubPort = ph.getHubPort()
-                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(seria$
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
 
         except PhidgetException as e:
@@ -95,9 +95,9 @@ class SensorReader():
     def onVoltageChangeHandler(self, ph, voltage):
 	print("[Voltage Event] -> Voltage: " + str(voltage))
 	voltage_value[0] = voltage
-    def onCurrentChangehandler_m(self, current):
+    def onCurrentChangeHandler_m(self, ph, current):
 	current_value[0] = current
-    def onCurrentChangehandler_b(self, current):	
+    def onCurrentChangeHandler_b(self, ph, current):	
 	current_value[1] = current
 
     def __init__(self):
@@ -124,7 +124,7 @@ class SensorReader():
         ch1.setOnAttachHandler(self.onAttachHandler)
         ch1.setOnDetachHandler(self.onDetachHandler)
         ch1.setOnErrorHandler(self.onErrorHandler)
-        ch1.setOnVoltageChangeHandler(self.onCurrentChangeHandler)
+        ch1.setOnCurrentChangeHandler(self.onCurrentChangeHandler_m)
 	
 	try: 
 	    ch1.openWaitForAttachment(5000)
@@ -161,7 +161,7 @@ class SensorReader():
 
         channelInfo = ChannelInfo()
         channelInfo.deviceSerialNumber = 539331
-        channelInfo.hubPort = 3
+        channelInfo.hubPort = 0
         channelInfo.isHubPortDevice = 0
         channelInfo.channel = 0
 
@@ -173,7 +173,7 @@ class SensorReader():
         ch3.setOnAttachHandler(self.onAttachHandler)
         ch3.setOnDetachHandler(self.onDetachHandler)
         ch3.setOnErrorHandler(self.onErrorHandler)
-        ch3.setOnVoltageChangeHandler(self.onCurrentChangeHandler)
+        ch3.setOnCurrentChangeHandler(self.onCurrentChangeHandler_b)
 	
         try: 
             ch3.openWaitForAttachment(5000)

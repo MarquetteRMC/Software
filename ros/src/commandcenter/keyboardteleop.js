@@ -81,22 +81,22 @@ KEYBOARDTELEOP.Teleop = function(options) {
         switch (keyCode) {
           case 65:
             // turn left
-            z = -0.5 * speed;
+            z = -1 * speed;
             l_pub = true;
             break;
           case 87:
             // up
-            x = 1 * speed;
+            x = -1 * speed;
             l_pub = true;
             break;
           case 68:
             // turn right
-            z = 0.5 * speed;
+            z = 1 * speed;
             l_pub = true;
             break;
           case 83:
             // down
-            x = -1 * speed;
+            x = 1 * speed;
             l_pub = true;
             break;
           case 73:
@@ -144,7 +144,7 @@ KEYBOARDTELEOP.Teleop = function(options) {
         linear : {
           x : x,
           y : y,
-          z : z
+          z : 0
         }
       });
       cmdVel.publish(l_twist);

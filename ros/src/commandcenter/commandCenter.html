@@ -57,8 +57,10 @@
 			<button id="digging-toggle" style="background-color:lightgreen">Start Digging</button>
 			<p class="card-text" id="dig">dig: 0</p>
 			<p class="card-text" id="dump">dump: 0</p>
-			<h5 class="card-title">/battery_voltage</h5>
-			<p class="card-text" id="voltage">Voltage: 0</p>
+			<h5 class="card-title">/phidgetsensors</h5>
+			<p class="card-text" id="battery-voltage">Battery Voltage: no data</p>
+			<p class="card-text" id="battery-current">Battery Current: no data</p>
+			<p class="card-text" id="motor-current">Motor Current: no data</p>
 		</div>
 	</div>
 	
@@ -130,7 +132,7 @@
     var x_vel = [];
     var z_vel = [];
     var diggingEnabled = false;
-    var heightAngle = 5.57;
+    var heightAngle = 5.65;
     var pitchAngle = 1.20;
     
     var jointAnglePub = new ROSLIB.Topic({
@@ -187,13 +189,31 @@
     
     var volt_sub = new ROSLIB.Topic({
 	    ros: ros,
-	    name: '/CurrentSensor/battery_voltage_draw',
+	    name: '/phidgetsensor/battery_voltage',
 	    messageType: 'std_msgs/Float64'
     });
     volt_sub.subscribe(function (message) {
-	    document.getElementById('voltage').innerHTML = 'Voltage: ' + message;
+	    document.getElementById('battery-voltage').innerHTML = 'Battery Voltage: ' + parseFloat(message.data).toFixed(2);
     });
-	
+    //motor current
+    var volt_sub = new ROSLIB.Topic({
+	    ros: ros,
+	    name: '/phidgetsensor/motor_current_draw',
+	    messageType: 'std_msgs/Float64'
+    });
+    volt_sub.subscribe(function (message) {
+	    document.getElementById('motor-current').innerHTML = 'Motor Current: ' + parseFloat(-message.data).toFixed(2);
+    });
+    //battery current
+    var volt_sub = new ROSLIB.Topic({
+	    ros: ros,
+	    name: '/phidgetsensor/battery_current_draw',
+	    messageType: 'std_msgs/Float64'
+    });
+    volt_sub.subscribe(function (message) {
+	    document.getElementById('battery-current').innerHTML = 'Battery Current: ' + parseFloat(-message.data).toFixed(2);
+    });
+
 	    // If there is an error on the backend, an 'error' emit will be emitted.
     ros.on('error', function (error) {
 	    console.log('error');
@@ -267,7 +287,7 @@
           range : 'min',
           min : 557,
           max : 618,
-          value : 557,
+          value : 565,
           slide : function(event, ui) {
             $('#height-label').html('heightAngle: ' + ui.value/100);
             heightAngle = ui.value/100;
