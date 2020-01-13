@@ -1,0 +1,6 @@
+class Motor(BasePart):
+	def __init__(self, name, job, position, maxSpeed, currSpeed, coordinateX, coordinateY, coordinateZ ):
+		BasePart.__init__(self, name, job, position, coordinateX, coordinateY, coordinateZ):
+			
+			self.maxSpeed = maxSpeed
+			self.currSpeed = currSpeed
