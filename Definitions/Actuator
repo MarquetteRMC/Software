@@ -1,0 +1,6 @@
+class Actuator(BasePart)
+	def __init__(self, name, job, position, maxLength, currLength, coordinateX, coordinateY, coordinateZ):
+		BasePart.__init__(self, name, job, position, coordinateX, coordinateY, coordinateZ):
+			
+			self.maxLength = maxLength
+			self.currLength = currLength

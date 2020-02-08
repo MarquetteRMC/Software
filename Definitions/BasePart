@@ -1,0 +1,9 @@
+class BasePart(BaseEntity):
+	def  __init__(self, name, job, position, coordinateX, coordinateY, coordinateZ):
+		BaseEntity.__init__(self, name):
+		
+			self.job = job
+			self.position = position
+			self.coordinateX = coordinateX
+			self.coordinateY = coordinateY
+			self.coordinateZ = coordinateZ
