@@ -134,7 +134,7 @@ class ODriveInterfaceAPI(object):
             self.axes = (self.driver.axis0, self.driver.axis1)
 
         except:
-            self.logger.error("No ODrive found. Is device powered?")
+            self.logger.error("No ODrive found. Is device powered? Is the Serial Number Correct?")
             return False
             
         # save some parameters for easy access

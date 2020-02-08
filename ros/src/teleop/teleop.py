@@ -199,7 +199,7 @@ class SimpleKeyTeleop():
         ord('g'): (50,0),
         #Dumping Motors
         ord('r'): (-100,0),
-	ord('f'): (100,0),
+	    ord('f'): (100,0),
 
 	#Toggle Digging On or Off
 	ord('a'): (1,0),
