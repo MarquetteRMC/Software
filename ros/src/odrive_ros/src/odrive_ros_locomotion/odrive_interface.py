@@ -130,6 +130,7 @@ class ODriveInterfaceAPI(object):
         
         try:
             self.driver = odrive.find_any(path="usb", serial_number="207B37943548", search_cancellation_token=None, channel_termination_token=None, timeout=30, logger=self.logger)
+            #207B37943548
             self.axes = (self.driver.axis0, self.driver.axis1)
 
         except:
