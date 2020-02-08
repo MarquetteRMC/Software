@@ -54,10 +54,6 @@ KEYBOARDTELEOP.Teleop = function(options) {
     messageType : 'geometry_msgs/Twist'
   });
 
-  this.startDigging = function() {
-	handleKey('i',true);
-  }
-
   // sets up a key listener on the page used for keyboard teleoperation
   var handleKey = function(keyCode, keyDown) {
     // used to check for changes in speed

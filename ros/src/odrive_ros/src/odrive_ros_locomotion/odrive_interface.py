@@ -106,7 +106,7 @@ class ODriveInterfaceSerial(object):
             return
             
         self.port.write('w axis0.controller.vel_setpoint %d\n' % right_motor_val)
-        time.sleep(0.01)
+        time.sleep(0.01) # set so motor does not continuously run, polls for value
         self.port.write('w axis1.controller.vel_setpoint %d\n' % left_motor_val)
         time.sleep(0.01)
 

@@ -190,10 +190,10 @@ class SimpleKeyTeleop():
 
     movement_bindings = {
         #locomotion motors
-        curses.KEY_UP:    ( 325,  0),
-        curses.KEY_DOWN:  (-325,  0),
-        curses.KEY_LEFT:  ( 0,  -325),
-        curses.KEY_RIGHT: ( 0, 325),
+        curses.KEY_UP:    ( 88,  0),
+        curses.KEY_DOWN:  (-88,  0),
+        curses.KEY_LEFT:  ( 0,  -50),
+        curses.KEY_RIGHT: ( 0, 50),
         #Digging Motors
         ord('t'): (-50,0),
         ord('g'): (50,0),
