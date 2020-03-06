@@ -57,20 +57,9 @@ class ODriveInterfaceSerial(object):
         voltage = voltage if voltage else "unknown"
         self.logger.debug("Vbus: %s" % voltage)
 
-        self.logger.debug("Calibrating left motor... (20 seconds)")
-        self.port.write('w axis1.requested_state 3\n')
-        time.sleep(20)
-
-        self.logger.debug("Calibrating right motor... (20 seconds)")
+        self.logger.debug("Calibrating motor... (20 seconds)")
         self.port.write('w axis0.requested_state 3\n')
         time.sleep(20)
-        
-    # https://github.com/madcowswe/ODrive/blob/1294ddff1dd0619e9f098ce12ca0936670a5b405/tools/odrive/enums.py
-    # w axis1.requested_state 3 # calibrate
-    # w axis1.requested_state 8 # closed loop control
-    # w axis1.controller.config.control_mode 2 # velocity control
-    # w axis1.controller.vel_setpoint 500
-    # w axis1.requested_state 1
         
     def engage(self):
         if not self.port:
@@ -80,24 +69,15 @@ class ODriveInterfaceSerial(object):
         self.logger.debug("Setting drive mode...")
         self.port.write('w axis0.requested_state 8\n')
         time.sleep(0.01)
-        self.port.write('w axis1.requested_state 8\n')
-        time.sleep(0.01)
 
         self.port.write('w axis0.controller.config.control_mode 2\n')
-        time.sleep(0.01)
-        self.port.write('w axis1.controller.config.control_mode 2\n')
-        time.sleep(0.01)
         
         self.port.write('w axis0.controller.vel_setpoint 0\n')
-        time.sleep(0.01)
-        self.port.write('w axis1.controller.vel_setpoint 0\n')
         time.sleep(0.01)
         
     def release(self):
         self.logger.debug("Releasing.")
         self.port.write('w axis0.requested_state %d\n' % AXIS_STATE_IDLE)
-        time.sleep(0.01)
-        self.port.write('w axis1.requested_state %d\n' % AXIS_STATE_IDLE)
         time.sleep(0.01)
             
     def drive(self, left_motor_val, right_motor_val):
@@ -107,15 +87,12 @@ class ODriveInterfaceSerial(object):
             
         self.port.write('w axis0.controller.vel_setpoint %d\n' % right_motor_val)
         time.sleep(0.01) # set so motor does not continuously run, polls for value
-        self.port.write('w axis1.controller.vel_setpoint %d\n' % left_motor_val)
-        time.sleep(0.01)
 
 
 class ODriveInterfaceAPI(object):
     driver = None
     encoder_cpr = 4096
     right_axis = None
-    left_axis = None
     connected = False
     
     def __init__(self, logger=None):
@@ -131,15 +108,14 @@ class ODriveInterfaceAPI(object):
         try:
             self.driver = odrive.find_any(path="usb", serial_number="207B37943548", search_cancellation_token=None, channel_termination_token=None, timeout=30, logger=self.logger)
             #207B37943548
-            self.axes = (self.driver.axis0, self.driver.axis1)
+            self.axes = (self.driver.axis0)
 
         except:
             self.logger.error("No ODrive found. Is device powered? Is the Serial Number Correct?")
             return False
             
         # save some parameters for easy access
-        self.right_axis = self.driver.axis0 if right_axis == 0 else self.driver.axis1
-        self.left_axis  = self.driver.axis1 if right_axis == 0 else self.driver.axis0
+        self.right_axis = self.driver.axis0
         self.encoder_cpr = self.driver.axis0.encoder.config.cpr
         
         self.connected = True
@@ -148,7 +124,6 @@ class ODriveInterfaceAPI(object):
     def disconnect(self):
         self.connected = False
         self.right_axis = None
-        self.left_axis = None
         
         if not self.driver:
             self.logger.error("Not connected.")
