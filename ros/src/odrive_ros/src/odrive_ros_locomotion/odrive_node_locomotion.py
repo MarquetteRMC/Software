@@ -35,7 +35,7 @@ class ODriveNode(object):
     last_cmd_vel_time = None
     
     # Robot wheel_track params for velocity -> motor speed conversion
-    wheel_track = .6477
+    wheel_track = .483
     tyre_circumference = .5282438
     encoder_counts_per_rev = 24
     m_s_to_value = 45.433 #change this back to 0. Changed for testing purposes  
@@ -49,7 +49,7 @@ class ODriveNode(object):
     def __init__(self): 
 
         self.axis_for_right = float(rospy.get_param('~axis_for_right', 0)) # if right calibrates first, this should be 0, else 1
-        self.wheel_track = float(rospy.get_param('~wheel_track', 0.6477)) # m, distance between wheel centres
+        self.wheel_track = float(rospy.get_param('~wheel_track', .483)) # m, distance between wheel centres
         self.tyre_circumference = float(rospy.get_param('~tyre_circumference', 0.5282438)) # used to translate velocity commands in m/s into motor rpm
         
         
@@ -173,11 +173,11 @@ class ODriveNode(object):
 
     def cmd_vel_callback(self, twist):
 	
-	motor_linear = self.constrain(twist.linear.x)
+	motor_linear = self.constrain(twist.linear.x) / 0.8
 	
 	motor_angular = self.constrain(twist.angular.z)
 
-	angular_to_linear = motor_angular * (self.wheel_track/2.0)
+	angular_to_linear = motor_angular * (self.wheel_track/1.0)
 
 	left_motor_val = int((motor_linear - angular_to_linear) * self.m_s_to_value)
 	right_motor_val = int((motor_linear + angular_to_linear) * self.m_s_to_value)

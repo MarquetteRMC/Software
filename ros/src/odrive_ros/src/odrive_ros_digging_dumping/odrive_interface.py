@@ -130,10 +130,11 @@ class ODriveInterfaceAPI(object):
         
         try:
             self.driver = odrive.find_any(path="usb", serial_number="206430804648", search_cancellation_token=None, channel_termination_token=None, timeout=30, logger=self.logger)
+            #206430804648
             self.axes = (self.driver.axis0, self.driver.axis1)
 
         except:
-            self.logger.error("No ODrive found. Is device powered?")
+            self.logger.error("No ODrive found. Is device powered? Is the Serial Number Correct?")
             return False
             
         # save some parameters for easy access

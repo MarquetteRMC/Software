@@ -30,10 +30,10 @@ KEYBOARDTELEOP.Teleop = function(options) {
   var throttle = options.throttle || 1.0;
 
   // used to externally throttle the speed (e.g., from a slider)
-  this.drive_scale = 1.0;
-  this.dig_scale = 0.5;
-  this.dump_scale = 1.0;
-  this.enabled = true;
+  this.drive_scale = 22;
+  this.dig_scale = 20;
+  this.dump_scale = 30;
+  this.enabled = false;
   this.digging = false;
 
   // linear x and y movement and angular z movement
@@ -71,12 +71,11 @@ KEYBOARDTELEOP.Teleop = function(options) {
     var dump_speed = 0;
     // throttle the speed by the slider and throttle constant
     
-    if (keyDown === true) {
+    if (keyDown === true && that.enabled === true) {
       speed = throttle * that.drive_scale;
       dig_speed = throttle * that.dig_scale;
       dump_speed = throttle * that.dump_scale;
     }
-    if(that.enabled) {
         // check which key was pressed
         switch (keyCode) {
           case 65:
@@ -123,7 +122,6 @@ KEYBOARDTELEOP.Teleop = function(options) {
             l_pub = false;
             d_pub = false;
         }
-    }
     
     if (that.digging === true) {
         console.log("digging");

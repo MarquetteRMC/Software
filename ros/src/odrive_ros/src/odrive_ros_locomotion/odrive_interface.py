@@ -106,7 +106,7 @@ class ODriveInterfaceSerial(object):
             return
             
         self.port.write('w axis0.controller.vel_setpoint %d\n' % right_motor_val)
-        time.sleep(0.01)
+        time.sleep(0.01) # set so motor does not continuously run, polls for value
         self.port.write('w axis1.controller.vel_setpoint %d\n' % left_motor_val)
         time.sleep(0.01)
 
@@ -130,10 +130,11 @@ class ODriveInterfaceAPI(object):
         
         try:
             self.driver = odrive.find_any(path="usb", serial_number="207B37943548", search_cancellation_token=None, channel_termination_token=None, timeout=30, logger=self.logger)
+            #207B37943548
             self.axes = (self.driver.axis0, self.driver.axis1)
 
         except:
-            self.logger.error("No ODrive found. Is device powered?")
+            self.logger.error("No ODrive found. Is device powered? Is the Serial Number Correct?")
             return False
             
         # save some parameters for easy access

@@ -84,7 +84,7 @@ class Node:
             
             h1,h2,p1,p2 = self.call_pids()
             h1,h2,p1,p2 = self.apply_deadband(h1,h2,p1,p2)
-            h1,h2,p1,p2 = self.safety_check(h1,h2,p1,p2,14,20)
+            h1,h2,p1,p2 = self.safety_check(h1,h2,p1,p2,40,20)
             
             if h1_old!=h1 or h2_old!=h2:
                 rospy.loginfo("pid output h1 %d, h2 %d", h1,h2)
@@ -106,8 +106,8 @@ class Node:
     def shutdown(self):
         rospy.loginfo("Shutting down joint_controller_node")
     def call_pids(self):
-        h1 = self.h1_pid(self.quantize(self.height_pos['m1']))
-        h2 = self.h2_pid(self.quantize(self.height_pos['m2']))
+        h1 = self.h1_pid(self.quantize(self.height_pos['m2']))
+        h2 = self.h2_pid(self.quantize(self.height_pos['m1']))
         p1 = self.p1_pid(self.quantize(self.pitch_pos['m1']))
         p2 = self.p2_pid(self.quantize(self.pitch_pos['m2']))
         return h1,h2,p1,p2
@@ -129,22 +129,22 @@ class Node:
         had_error = False
         if abs(self.quantize(self.height_pos['m1'])-self.quantize(self.height_pos['m2'])) > thresh_p:
             had_error = True
-            h1 = 0
-            h2 = 0
+            #h1 = -20
+            #h2 = -20
         if abs(self.quantize(self.pitch_pos['m1'])-self.quantize(self.pitch_pos['m2'])) > thresh_p:
             had_error = True
-            p1 = 0
-            p2 = 0
+            #p1 = 0
+            #p2 = 0
         if abs(h1 - h2)>thresh_o:
             had_error = True
-            h1 = 0
-            h2 = 0
+            h1 = -40
+            h2 = -40
         if abs(p1 - p2)>thresh_o:
             had_error = True
             p1 = 0
             p2 = 0
         if had_error:
-            rospy.loginfo("ERROR!!!")
+            rospy.logerr("ERROR!!!")
         return h1, h2, p1, p2
     
     def pitch_add_meas(self, p1, p2):
