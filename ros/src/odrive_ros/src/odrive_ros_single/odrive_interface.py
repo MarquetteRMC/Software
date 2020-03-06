@@ -44,7 +44,7 @@ class ODriveInterfaceSerial(object):
         
     def setup(self):
         if not self.port:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (setup interface)")
             return
             
         self.port.write('r vbus_voltage\n')
@@ -63,7 +63,7 @@ class ODriveInterfaceSerial(object):
         
     def engage(self):
         if not self.port:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (engage interface)")
             return
             
         self.logger.debug("Setting drive mode...")
@@ -82,7 +82,7 @@ class ODriveInterfaceSerial(object):
             
     def drive(self, left_motor_val, right_motor_val):
         if not self.port:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (drive interface)")
             return
             
         self.port.write('w axis0.controller.vel_setpoint %d\n' % right_motor_val)
@@ -126,7 +126,7 @@ class ODriveInterfaceAPI(object):
         self.right_axis = None
         
         if not self.driver:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (disconnect API)")
             return False
         
         temp_driver = self.driver
@@ -139,7 +139,7 @@ class ODriveInterfaceAPI(object):
 
     def calibrate(self):
         if not self.driver:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (calibrate API)")
             return False
         
         self.logger.info("Vbus %.2fV" % self.driver.vbus_voltage)
@@ -160,7 +160,7 @@ class ODriveInterfaceAPI(object):
         
     def preroll(self):
         if not self.driver:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (preroll API)")
             return False
             
         self.logger.info("Vbus %.2fV" % self.driver.vbus_voltage)
@@ -183,7 +183,7 @@ class ODriveInterfaceAPI(object):
         
     def engage(self):
         if not self.driver:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (engage API)")
             return False
 
         self.logger.debug("Setting drive mode.")
@@ -196,7 +196,7 @@ class ODriveInterfaceAPI(object):
         
     def release(self):
         if not self.driver:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (release API)")
             return
         self.logger.debug("Releasing.")
         for axis in self.axes: 
@@ -204,7 +204,7 @@ class ODriveInterfaceAPI(object):
     
     def drive(self, left_motor_val, right_motor_val):
         if not self.driver:
-            self.logger.error("Not connected.")
+            self.logger.error("Not connected. (drive API)")
             return
         for axis in self.axes:
             print("setpoint " + str(axis.motor.current_control.Iq_setpoint))
